@@ -116,22 +116,19 @@ class _HomeState extends State<Home> {
                           thumbVisibility: true,
                           thickness: 8.0,
                           radius: const Radius.circular(20),
-                          child: GridView.builder(
+                          child: GridView(
                             controller: controller,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 20),
-                            itemCount: BlocProvider.of<UiBloc>(context)
-                                .getProducts(BlocProvider.of<UiBloc>(context)
-                                    .catagoreyIndex)
-                                .length,
+
                             gridDelegate:
                                 const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 150,
                               crossAxisSpacing: 0,
                               childAspectRatio: 1.3,
                             ),
-                            itemBuilder: (context, index) =>
-                                 ProductItem(),
+                       
+                                children: [ ProductItem()],
                           ),
                         ));
                       },
