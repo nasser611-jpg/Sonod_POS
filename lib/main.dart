@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/generated/l10n.dart';
 import 'package:sonod_point_of_sell/layout/views/home.dart';
+import 'package:sonod_point_of_sell/manager/db_bloc/database_bloc.dart';
 import 'package:sonod_point_of_sell/manager/ui_bloc/ui_bloc.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the FFI database factory
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
       size: Size(1548, 1024),
@@ -21,6 +28,9 @@ void main() async {
     await windowManager.focus();
   });
 
+  DbHelper db = DbHelper();
+  await db.createDatabase(); // Note: Use 'await' to ensure the database is created before further operations
+
   runApp(const MyApp());
 }
 
@@ -29,8 +39,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UiBloc(),
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (context) => UiBloc(),),
+      BlocProvider(create: (context) => DatabaseBloc(),),
+    ],
       child: MaterialApp(
         title: 'POS',
         debugShowCheckedModeBanner: false,

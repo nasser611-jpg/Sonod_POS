@@ -1,10 +1,8 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DbHelper {
   static final DbHelper _instance = DbHelper.internal();
@@ -14,17 +12,20 @@ class DbHelper {
 
   Future<Database> createDatabase() async {
     try {
+      // Setup FFI bindings for sqflite
+      sqfliteFfiInit();
+
+      // Get the application documents directory
       final directory = await getApplicationDocumentsDirectory();
+
       final path = join(directory.path, 'pos.db');
-      final backupDirectory = Directory('${directory.path}/backup');
+      final backupDirectory = Directory(join(directory.path, 'backup'));
 
       if (!backupDirectory.existsSync()) {
         backupDirectory.createSync(recursive: true);
       }
-      
 
       final backupPath = join(backupDirectory.path, 'pos_backup.db');
-   
 
       // Check if the database file exists
       final databaseFile = File(path);
