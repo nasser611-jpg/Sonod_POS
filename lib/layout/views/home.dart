@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sonod_point_of_sell/core/util/time.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
 import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:window_manager/window_manager.dart';
@@ -22,18 +26,27 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   ScrollController? controller = ScrollController();
-
+  late StreamController<String> _streamController;
+  late Stream<String> _stream;
   @override
   void initState() {
     super.initState();
-     BlocProvider.of<UiBloc>(context)
-                            .add(FeatchProductsEvent(classId: 1));
-  }
+    BlocProvider.of<UiBloc>(context).add(FeatchProductsEvent(classId: 1));
+    super.initState();
 
+    // Initialize stream controller with a string type
+    _streamController = StreamController<String>();
+    // Create a stream that emits the current date and time every second
+    _stream = _streamController.stream;
+
+    // Start emitting events
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      _streamController.add(getCurrentDateTime());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,17 +110,25 @@ class _HomeState extends State<Home> {
           Container(
             height: 55,
             color: Colors.white,
-            child: const Row(children: [
-              StatsItem(
+            child: Row(children: [
+              const StatsItem(
                   icon: 'assets/icons/orders.svg', text: "عدد الطلبات : 64 "),
-              StatsItem(
+              const StatsItem(
                   icon: 'assets/icons/last_invoice.svg',
                   text: " اخر فاتورة : 2022/01/02 02:22"),
-              StatsItem(
-                  icon: 'assets/icons/clock.svg',
-                  text: "تاريخ : 2022/01/02 02:22"),
-              Spacer(),
-              StatsItem(icon: 'assets/icons/exit.svg', text: "الخروج"),
+              StreamBuilder(
+                  stream: _stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return StatsItem(
+                          icon: 'assets/icons/clock.svg',
+                          text: "تاريخ : ${getCurrentDateTime()}");
+                    } else {
+                      return const SizedBox();
+                    }
+                  }),
+              const Spacer(),
+              const StatsItem(icon: 'assets/icons/exit.svg', text: "الخروج"),
             ]),
           ),
           // page content
@@ -132,12 +153,9 @@ class _HomeState extends State<Home> {
                               SliverPadding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 20),
-                                sliver:
-                                    BlocBuilder<UiBloc, UiState>(
+                                sliver: BlocBuilder<UiBloc, UiState>(
                                   builder: (context, state) {
-                                    print('the prodcts state is $state');
-                                    if (state is ProudectsLoadedState ) {
-                                      // Products loaded successfully, display them
+                                    if (state is ProudectsLoadedState) {
                                       List<Product> products = state.prodcts;
 
                                       return SliverGrid(
@@ -154,21 +172,23 @@ class _HomeState extends State<Home> {
                                             price: products[index]
                                                 .price!
                                                 .toDouble(),
+                                            productId: products[index]
+                                                .productId!
+                                                .toInt(),
                                           ),
                                           childCount: products.length,
                                         ),
                                       );
                                     } else if (state is ProductsError) {
                                       // Handle error state, show error message if needed
-                                      return SliverToBoxAdapter(
-                                        child:const Center(
-                                          child: Text(
-                                              'Error: '),
+                                      return const SliverToBoxAdapter(
+                                        child: Center(
+                                          child: Text('Error: '),
                                         ),
                                       );
                                     } else {
                                       // Handle other states if needed
-                                      return SliverToBoxAdapter(
+                                      return const SliverToBoxAdapter(
                                         child: Center(
                                           child:
                                               CircularProgressIndicator(), // Or any other loading indicator
@@ -316,11 +336,24 @@ class _HomeState extends State<Home> {
                         )),
 
                     // Cart Items
-                    Expanded(
-                        child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) => CartItem(count: index),
-                    )),
+
+                    BlocBuilder<FetchProudectByIdBloc, FetchProudectByIdState>(
+                      builder: (context, state) {
+                      
+                        log('the satae is $state');
+                        if (state is ProudectsLoadedByIdState) {
+             
+                          return Expanded(
+                              child: ListView.builder(
+                              
+                            itemCount: state.prodcts.length,
+                            itemBuilder: (context, index,) =>
+                                CartItem(count: index,proudctName:state.prodcts[index].productName),
+                          ));
+                        }
+                        return const Expanded(child: Center(child: Text('No Item'),));
+                      },
+                    ),
 
                     Container(height: 2, color: const Color(0xffE7E7E7)),
                     Container(
@@ -586,78 +619,5 @@ class BtnOptionBar extends StatelessWidget {
         ]),
       ),
     );
-  }
-}
-
-class CartItem extends StatelessWidget {
-  const CartItem({super.key, this.isSelected = false, this.count = 0});
-
-  final bool isSelected;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: double.infinity,
-        height: 38,
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-            color:
-                isSelected ? const Color(0xffF4FFFF) : const Color(0xffE7E7E7),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-                color: isSelected
-                    ? const Color(0xff2D969B)
-                    : const Color(0xffE7E7E7))),
-        child: Center(
-          child: Row(children: [
-            Expanded(
-                flex: 1,
-                child: Center(
-                    child: Text((count + 1).toString(),
-                        style: TextStyle(
-                            color: isSelected
-                                ? const Color(0xff2D969B)
-                                : const Color(0xff5E5E5E),
-                            fontWeight: FontWeight.bold)))),
-            Expanded(
-                flex: 5,
-                child: Text(
-                  "سنكويك شراب",
-                  style: TextStyle(
-                      color: isSelected
-                          ? const Color(0xff2D969B)
-                          : const Color(0xff5E5E5E)),
-                )),
-            Expanded(
-                flex: 2,
-                child: Text(
-                  "كوب",
-                  style: TextStyle(
-                      color: isSelected
-                          ? const Color(0xff2D969B)
-                          : const Color(0xff5E5E5E)),
-                )),
-            Expanded(
-                flex: 2,
-                child: Text(
-                  "12,000",
-                  style: TextStyle(
-                      color: isSelected
-                          ? const Color(0xff2D969B)
-                          : const Color(0xff5E5E5E),
-                      fontWeight: FontWeight.bold),
-                )),
-            Expanded(
-                flex: 1,
-                child: Text("3",
-                    style: TextStyle(
-                        color: isSelected
-                            ? const Color(0xff2D969B)
-                            : const Color(0xff5E5E5E),
-                        fontWeight: FontWeight.bold)))
-          ]),
-        ));
   }
 }

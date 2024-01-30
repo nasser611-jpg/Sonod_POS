@@ -15,6 +15,7 @@ class UiBloc extends Bloc<UiEvent, UiState> {
         try {
           final List<Product> prodcts = await getProductsByClassId(event.classId);
           emit(ProudectsLoadedState(prodcts: prodcts));
+        // ignore: empty_catches
         } catch (e) {
     
         }
