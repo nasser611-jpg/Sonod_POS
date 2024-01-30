@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class CartItem extends StatelessWidget {
   final int count;
   final String proudctName;
+  final String unit;
+  final double price;
   CartItem({
     super.key,
     this.isSelected = false,
-    this.count = 0, required this.proudctName,
+    this.count = 0, required this.proudctName, required this.unit, required this.price,
   });
   TextEditingController quantity = TextEditingController(text: '1');
   final bool isSelected;
@@ -49,7 +51,7 @@ class CartItem extends StatelessWidget {
             Expanded(
                 flex: 2,
                 child: Text(
-                  "كوب",
+                  unit,
                   style: TextStyle(
                       color: isSelected
                           ? const Color(0xff2D969B)
@@ -58,7 +60,7 @@ class CartItem extends StatelessWidget {
             Expanded(
                 flex: 2,
                 child: Text(
-                  "12,000",
+                  price.toString(),
                   style: TextStyle(
                       color: isSelected
                           ? const Color(0xff2D969B)

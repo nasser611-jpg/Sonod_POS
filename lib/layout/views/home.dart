@@ -25,6 +25,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController paidAmountController = TextEditingController();
+  double total = 0.0;
+  double staydAmount = 0.0;
+
   ScrollController? controller = ScrollController();
   late StreamController<String> _streamController;
   late Stream<String> _stream;
@@ -32,6 +36,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     BlocProvider.of<UiBloc>(context).add(FeatchProductsEvent(classId: 1));
+
     super.initState();
 
     // Initialize stream controller with a string type
@@ -311,17 +316,17 @@ class _HomeState extends State<Home> {
                             Expanded(
                                 flex: 7,
                                 child: Text(
-                                  "الصنف",
+                                  "       الصنف",
                                   style: TextStyle(color: Colors.white),
                                 )),
                             Expanded(
-                                flex: 2,
+                                flex: 4,
                                 child: Text(
-                                  "الوحدة",
+                                  "الوحدة ",
                                   style: TextStyle(color: Colors.white),
                                 )),
                             Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Text(
                                   "السعر",
                                   style: TextStyle(color: Colors.white),
@@ -339,19 +344,34 @@ class _HomeState extends State<Home> {
 
                     BlocBuilder<FetchProudectByIdBloc, FetchProudectByIdState>(
                       builder: (context, state) {
-                      
                         log('the satae is $state');
                         if (state is ProudectsLoadedByIdState) {
-             
                           return Expanded(
                               child: ListView.builder(
-                              
-                            itemCount: state.prodcts.length,
-                            itemBuilder: (context, index,) =>
-                                CartItem(count: index,proudctName:state.prodcts[index].productName),
-                          ));
+                                  itemCount: state.prodcts.length,
+                                  itemBuilder: (
+                                    context,
+                                    index,
+                                  ) {
+                                    for (var element in state.prodcts) {
+                                      total += element.price as double;
+                                    }
+
+                                    return CartItem(
+                                      count: index,
+                                      proudctName:
+                                          state.prodcts[index].productName,
+                                      price:
+                                          state.prodcts[index].price as double,
+                                      unit:
+                                          state.prodcts[index].unit.toString(),
+                                    );
+                                  }));
                         }
-                        return const Expanded(child: Center(child: Text('No Item'),));
+                        return const Expanded(
+                            child: Center(
+                          child: Text('No Item'),
+                        ));
                       },
                     ),
 
@@ -384,7 +404,7 @@ class _HomeState extends State<Home> {
                                           color: const Color(0xffD9D9D9)),
                                       borderRadius: BorderRadius.circular(4),
                                       color: Colors.white),
-                                  child: const Text("12,500",
+                                  child: Text("$total",
                                       style: TextStyle(
                                           color: Color(0xff374957),
                                           fontWeight: FontWeight.bold,
@@ -424,8 +444,9 @@ class _HomeState extends State<Home> {
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                               color: Colors.white),
-                                          child: const Text("13,000",
-                                              style: TextStyle(
+                                          child: TextField(
+                                              controller: paidAmountController,
+                                              style: const TextStyle(
                                                   color: Color(0xff374957),
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 15)),
@@ -462,7 +483,7 @@ class _HomeState extends State<Home> {
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                               color: Colors.white),
-                                          child: const Text("-500",
+                                          child: Text(staydAmount.toString(),
                                               style: TextStyle(
                                                   color: Color(
                                                       0xffEB1E4B), // Color(0xff374957),
