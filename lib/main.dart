@@ -4,8 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/generated/l10n.dart';
 import 'package:sonod_point_of_sell/layout/views/home.dart';
-import 'package:sonod_point_of_sell/manager/db_bloc/database_bloc.dart';
-import 'package:sonod_point_of_sell/manager/ui_bloc/ui_bloc.dart';
+import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 void main() async {
@@ -17,32 +17,37 @@ void main() async {
 
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-      size: Size(1548, 1024),
-      center: true,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-      alwaysOnTop: false);
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
+    size: Size(1548, 1024),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
+    alwaysOnTop: false,
+  );
 
-  DbHelper db = DbHelper();
-  await db.createDatabase(); // Note: Use 'await' to ensure the database is created before further operations
+  await windowManager.waitUntilReadyToShow(windowOptions);
+  await windowManager.show();
+  await windowManager.focus();
+
+  await DbHelper().createDatabase();
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(create: (context) => UiBloc(),),
-      BlocProvider(create: (context) => DatabaseBloc(),),
-    ],
+    return MultiBlocProvider(
+      providers: [     BlocProvider<ProductsBloc>(
+          create: (context) => ProductsBloc(),
+        ),
+        BlocProvider<UiBloc>(
+          create: (context) => UiBloc(),
+        ),
+   
+      ],
       child: MaterialApp(
         title: 'POS',
         debugShowCheckedModeBanner: false,

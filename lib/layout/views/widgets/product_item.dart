@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sonod_point_of_sell/Database/init_database.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
 class ProductItem extends StatefulWidget {
   final String productName;
@@ -14,13 +12,7 @@ class ProductItem extends StatefulWidget {
 }
 
 class _ProductItemState extends State<ProductItem> {
-  final DbHelper dbHelper = DbHelper();
-  List<Product> products = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
   
   @override
   Widget build(BuildContext context) {
@@ -63,7 +55,7 @@ class _ProductItemState extends State<ProductItem> {
             child: Center(
                 child: Text(
               widget.price.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff374957)),

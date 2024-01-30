@@ -1,7 +1,9 @@
-import 'package:sonod_point_of_sell/Database/init_database.dart';
+
+
+ import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/model/catag_model.dart';
 
- Future<List<Class>> getAllClasses() async {
+Future<List<Class>> getAllClasses() async {
   DbHelper dbH=DbHelper();
   final db = await dbH.createDatabase();
   final List<Map<String, dynamic>> maps = await db.query('class');

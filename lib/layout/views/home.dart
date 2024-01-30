@@ -3,10 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
-import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
-import 'package:sonod_point_of_sell/manager/db_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -23,28 +22,18 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   ScrollController? controller = ScrollController();
-    final DbHelper dbHelper = DbHelper();
-  List<Product> products = [];
 
   @override
   void initState() {
     super.initState();
-    loadProducts();
+     BlocProvider.of<UiBloc>(context)
+                            .add(FeatchProductsEvent(classId: 1));
   }
 
-  Future<void> loadProducts() async {
-    try {
-      final List<Product> productList =
-          await getProductsByClassId(BlocProvider.of<DatabaseBloc>(context).classID);
-      setState(() {
-        products = productList;
-      });
-    } catch (e) {
-      print('Error loading products: $e');
-    }
-  }
+
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,27 +119,68 @@ class _HomeState extends State<Home> {
                   children: [
                     const Categories(),
                     Expanded(
-                        child: Scrollbar(
-                      controller: controller,
-                      trackVisibility: true,
-                      interactive: true,
-                      thumbVisibility: true,
-                      thickness: 8.0,
-                      radius: const Radius.circular(20),
-                 child:  GridView.builder(
-  controller: controller,
-  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-  itemCount: products.length,
-  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-    maxCrossAxisExtent: 150,
-    crossAxisSpacing: 0,
-    childAspectRatio: 1.3,
-  ),
-  itemBuilder: (context, index) => ProductItem(
-    productName: products[index].productName,
-    price: products[index].price!.toDouble(),
-  ),
-),)),
+                      child: Scrollbar(
+                          controller: controller,
+                          trackVisibility: true,
+                          interactive: true,
+                          thumbVisibility: true,
+                          thickness: 8.0,
+                          radius: const Radius.circular(20),
+                          child: CustomScrollView(
+                            controller: controller,
+                            slivers: [
+                              SliverPadding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 20),
+                                sliver:
+                                    BlocBuilder<UiBloc, UiState>(
+                                  builder: (context, state) {
+                                    print('the prodcts state is $state');
+                                    if (state is ProudectsLoadedState ) {
+                                      // Products loaded successfully, display them
+                                      List<Product> products = state.prodcts;
+
+                                      return SliverGrid(
+                                        gridDelegate:
+                                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                          maxCrossAxisExtent: 150,
+                                          crossAxisSpacing: 0,
+                                          childAspectRatio: 1.3,
+                                        ),
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) => ProductItem(
+                                            productName:
+                                                products[index].productName,
+                                            price: products[index]
+                                                .price!
+                                                .toDouble(),
+                                          ),
+                                          childCount: products.length,
+                                        ),
+                                      );
+                                    } else if (state is ProductsError) {
+                                      // Handle error state, show error message if needed
+                                      return SliverToBoxAdapter(
+                                        child:const Center(
+                                          child: Text(
+                                              'Error: '),
+                                        ),
+                                      );
+                                    } else {
+                                      // Handle other states if needed
+                                      return SliverToBoxAdapter(
+                                        child: Center(
+                                          child:
+                                              CircularProgressIndicator(), // Or any other loading indicator
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          )),
+                    ),
                     const OptionBar()
                   ],
                 ),
@@ -401,7 +431,8 @@ class _HomeState extends State<Home> {
                                               color: Colors.white),
                                           child: const Text("-500",
                                               style: TextStyle(
-                                                  color: Color(0xffEB1E4B),  // Color(0xff374957),
+                                                  color: Color(
+                                                      0xffEB1E4B), // Color(0xff374957),
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 15)),
                                         )
@@ -415,7 +446,9 @@ class _HomeState extends State<Home> {
                             const SizedBox(height: 16),
 
                             ///
-                             Keyboard(onTap: (value) =>  log(value),)
+                            Keyboard(
+                              onTap: (value) => log(value),
+                            )
                           ]),
                     )
                   ],
@@ -431,39 +464,53 @@ class _HomeState extends State<Home> {
 
 class Keyboard extends StatefulWidget {
   const Keyboard({
-    super.key, required this.onTap,
+    super.key,
+    required this.onTap,
   });
 
-  final Function(String) onTap ;
+  final Function(String) onTap;
 
   @override
   State<Keyboard> createState() => _KeyboardState();
 }
 
 class _KeyboardState extends State<Keyboard> {
-  List<String> keyname = ["تصفير","9","8","7","0","6","5","4","حذف","3","2","1"];
+  List<String> keyname = [
+    "تصفير",
+    "9",
+    "8",
+    "7",
+    "0",
+    "6",
+    "5",
+    "4",
+    "حذف",
+    "3",
+    "2",
+    "1"
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
         child: GridView.builder(
             itemCount: 12,
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    childAspectRatio: 1.6),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, childAspectRatio: 1.6),
             itemBuilder: (context, index) => InkWell(
-              onTap: ()=>widget.onTap(keyname[index]),
-              child: Container(
+                  onTap: () => widget.onTap(keyname[index]),
+                  child: Container(
                     margin: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(4),
                         color: const Color(0xff374957)),
-              
-                        child: Center(child: Text(keyname[index],style: const TextStyle(color: Colors.white,))) ,
+                    child: Center(
+                        child: Text(keyname[index],
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ))),
                   ),
-            )));
+                )));
   }
 }
 
@@ -569,33 +616,47 @@ class CartItem extends StatelessWidget {
                 flex: 1,
                 child: Center(
                     child: Text((count + 1).toString(),
-                        style:  TextStyle(
-                            color:  isSelected? const Color(0xff2D969B) : const Color(0xff5E5E5E) ,
+                        style: TextStyle(
+                            color: isSelected
+                                ? const Color(0xff2D969B)
+                                : const Color(0xff5E5E5E),
                             fontWeight: FontWeight.bold)))),
-             Expanded(
+            Expanded(
                 flex: 5,
                 child: Text(
                   "سنكويك شراب",
-                  style: TextStyle(color: isSelected? const Color(0xff2D969B) : const Color(0xff5E5E5E)  ),
+                  style: TextStyle(
+                      color: isSelected
+                          ? const Color(0xff2D969B)
+                          : const Color(0xff5E5E5E)),
                 )),
-             Expanded(
+            Expanded(
                 flex: 2,
                 child: Text(
                   "كوب",
-                  style: TextStyle(color:  isSelected? const Color(0xff2D969B) : const Color(0xff5E5E5E) ),
+                  style: TextStyle(
+                      color: isSelected
+                          ? const Color(0xff2D969B)
+                          : const Color(0xff5E5E5E)),
                 )),
-             Expanded(
+            Expanded(
                 flex: 2,
                 child: Text(
                   "12,000",
                   style: TextStyle(
-                      color:  isSelected? const Color(0xff2D969B) : const Color(0xff5E5E5E) , fontWeight: FontWeight.bold),
+                      color: isSelected
+                          ? const Color(0xff2D969B)
+                          : const Color(0xff5E5E5E),
+                      fontWeight: FontWeight.bold),
                 )),
-             Expanded(
+            Expanded(
                 flex: 1,
                 child: Text("3",
                     style: TextStyle(
-                        color:  isSelected? const Color(0xff2D969B) : const Color(0xff5E5E5E) , fontWeight: FontWeight.bold)))
+                        color: isSelected
+                            ? const Color(0xff2D969B)
+                            : const Color(0xff5E5E5E),
+                        fontWeight: FontWeight.bold)))
           ]),
         ));
   }

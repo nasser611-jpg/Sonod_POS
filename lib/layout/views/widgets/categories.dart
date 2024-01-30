@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sonod_point_of_sell/Database/featch_catagories.dart';
-import 'package:sonod_point_of_sell/Database/init_database.dart';
-import 'package:sonod_point_of_sell/manager/db_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/model/catag_model.dart';
 
 class Categories extends StatefulWidget {
@@ -16,25 +15,10 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
-  int activeIndex = 1;
-  final DbHelper dbHelper = DbHelper();
-  late List<Class> classes = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadClasses();
-  }
-
-  Future<void> loadClasses() async {
-    final List<Class> classList = await getAllClasses();
-    setState(() {
-      classes = classList;
-    });
-  }
-
+  int activeIndex = 0;
   @override
   Widget build(BuildContext context) {
+        BlocProvider.of<ProductsBloc>(context).add(FeatchCalssesEvent());
     return Container(
       height: 84,
       width: double.infinity,
@@ -44,53 +28,63 @@ class _CategoriesState extends State<Categories> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: classes.length,
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  activeIndex = index;
-                  BlocProvider.of<DatabaseBloc>(context).classID=index+1;
-                  print('the class ID is ${ BlocProvider.of<DatabaseBloc>(context).classID}');
-                 
-                  setState(() {});
+          BlocBuilder<ProductsBloc, ProductsState>(
+            builder: (context, state) {
+              if (state is ClassesLoadedState) {
+                final List<Class> catagories = state.classes;
+                return Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: catagories.length,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () {
+                        activeIndex = index;
 
-                },
-                child: Container(
-                  width: 104,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: ShapeDecoration(
-                    shadows: [
-                      if (activeIndex == index)
-                        BoxShadow(
-                            color: Colors.teal.withOpacity(0.7),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 2),
-                            blurStyle: BlurStyle.outer),
-                    ],
-                    gradient: const LinearGradient(
-                      begin: Alignment(-1.00, -0.01),
-                      end: Alignment(1, 0.01),
-                      colors: [Color(0xFFFCE3DA), Colors.white],
-                    ),
-                    shape: RoundedRectangleBorder(
-                      side:
-                          const BorderSide(width: 1, color: Color(0xFFF04937)),
-                      borderRadius: BorderRadius.circular(4),
+                        BlocProvider.of<UiBloc>(context)
+                            .add(FeatchProductsEvent(classId:  index + 1));
+
+                        setState(() {});
+                      },
+                      child: Container(
+                        width: 104,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: ShapeDecoration(
+                          shadows: [
+                            if (activeIndex == index)
+                              BoxShadow(
+                                  color: Colors.teal.withOpacity(0.7),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 2),
+                                  blurStyle: BlurStyle.outer),
+                          ],
+                          gradient: const LinearGradient(
+                            begin: Alignment(-1.00, -0.01),
+                            end: Alignment(1, 0.01),
+                            colors: [Color(0xFFFCE3DA), Colors.white],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                width: 1, color: Color(0xFFF04937)),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            catagories[index].className,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Color(0xffF04A37)),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: Center(
-                    child: Text(
-                      classes[index].className,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Color(0xffF04A37)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                );
+              }
+              else{
+                return const Center(child: CircularProgressIndicator(),);
+              }
+            },
           ),
           Container(
             width: 104,
