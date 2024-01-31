@@ -22,6 +22,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       } 
        else if (event is FeatchCalssesEvent) {
         try {
+       
           final List<Class> classs = await getAllClasses();
           emit(ClassesLoadedState(classes: classs));
         } catch (e) {

@@ -10,3 +10,9 @@ final List<Product>prodcts;
 
   ProudectsLoadedState({required this.prodcts});
 }
+
+class ProudectsLoadedStateById extends UiState{
+final List<Product>prodcts;
+
+  ProudectsLoadedStateById({required this.prodcts});
+}

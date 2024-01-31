@@ -10,6 +10,7 @@ import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 void main() async {
+  //  Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize the FFI database factory
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           create: (context) => UiBloc(),
         ),
           BlocProvider<FetchProudectByIdBloc>(
-          create: (context) =>FetchProudectByIdBloc(),
+          create: (context) =>FetchProudectByIdBloc()
         ),
    
    

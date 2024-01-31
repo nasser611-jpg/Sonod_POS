@@ -4,18 +4,17 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/time.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
-import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/proudcts_items_widget.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../app_layout.dart';
 import 'widgets/menu_item.dart';
-import 'widgets/product_item.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -144,68 +143,7 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: [
                     const Categories(),
-                    Expanded(
-                      child: Scrollbar(
-                          controller: controller,
-                          trackVisibility: true,
-                          interactive: true,
-                          thumbVisibility: true,
-                          thickness: 8.0,
-                          radius: const Radius.circular(20),
-                          child: CustomScrollView(
-                            controller: controller,
-                            slivers: [
-                              SliverPadding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 20),
-                                sliver: BlocBuilder<UiBloc, UiState>(
-                                  builder: (context, state) {
-                                    if (state is ProudectsLoadedState) {
-                                      List<Product> products = state.prodcts;
-
-                                      return SliverGrid(
-                                        gridDelegate:
-                                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                                          maxCrossAxisExtent: 150,
-                                          crossAxisSpacing: 0,
-                                          childAspectRatio: 1.3,
-                                        ),
-                                        delegate: SliverChildBuilderDelegate(
-                                          (context, index) => ProductItem(
-                                            productName:
-                                                products[index].productName,
-                                            price: products[index]
-                                                .price!
-                                                .toDouble(),
-                                            productId: products[index]
-                                                .productId!
-                                                .toInt(),
-                                          ),
-                                          childCount: products.length,
-                                        ),
-                                      );
-                                    } else if (state is ProductsError) {
-                                      // Handle error state, show error message if needed
-                                      return const SliverToBoxAdapter(
-                                        child: Center(
-                                          child: Text('Error: '),
-                                        ),
-                                      );
-                                    } else {
-                                      // Handle other states if needed
-                                      return const SliverToBoxAdapter(
-                                        child: Center(
-                                          child:
-                                              CircularProgressIndicator(), // Or any other loading indicator
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          )),
-                    ),
+                    ProudctsItems(),
                     const OptionBar()
                   ],
                 ),
@@ -346,6 +284,10 @@ class _HomeState extends State<Home> {
                       builder: (context, state) {
                         log('the satae is $state');
                         if (state is ProudectsLoadedByIdState) {
+                          print('${featchBlocById(context).quantity}');
+                        
+                           
+                          
                           return Expanded(
                               child: ListView.builder(
                                   itemCount: state.prodcts.length,
@@ -353,10 +295,7 @@ class _HomeState extends State<Home> {
                                     context,
                                     index,
                                   ) {
-                                    for (var element in state.prodcts) {
-                                      total += element.price as double;
-                                    }
-
+                                  
                                     return CartItem(
                                       count: index,
                                       proudctName:
@@ -370,7 +309,7 @@ class _HomeState extends State<Home> {
                         }
                         return const Expanded(
                             child: Center(
-                          child: Text('No Item'),
+                          child: Text('لا توجد عناصر مضافه...'),
                         ));
                       },
                     ),
@@ -404,11 +343,24 @@ class _HomeState extends State<Home> {
                                           color: const Color(0xffD9D9D9)),
                                       borderRadius: BorderRadius.circular(4),
                                       color: Colors.white),
-                                  child: Text("$total",
-                                      style: TextStyle(
-                                          color: Color(0xff374957),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15)),
+                                  child: BlocBuilder<FetchProudectByIdBloc,
+                                      FetchProudectByIdState>(
+                                    builder: (context, state) {
+                                      if (state is ProudectsLoadedByIdState) {
+                                        return Text("$total",
+                                            style: const TextStyle(
+                                                color: Color(0xff374957),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15));
+                                      }else {
+                                        return const Text("0.0",
+                                            style: TextStyle(
+                                                color: Color(0xff374957),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15));
+                                      }
+                                    },
+                                  ),
                                 )
                               ],
                             ),
@@ -484,7 +436,7 @@ class _HomeState extends State<Home> {
                                                   BorderRadius.circular(4),
                                               color: Colors.white),
                                           child: Text(staydAmount.toString(),
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   color: Color(
                                                       0xffEB1E4B), // Color(0xff374957),
                                                   fontWeight: FontWeight.bold,
@@ -509,7 +461,7 @@ class _HomeState extends State<Home> {
                 ),
               )
             ],
-          ))
+          )),
         ],
       ),
     );

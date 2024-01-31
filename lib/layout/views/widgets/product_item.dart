@@ -20,8 +20,11 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-  BlocProvider.of<FetchProudectByIdBloc>(context).add(FeatchProductsByIdEvent(proudctId: widget.productId));
+  BlocProvider.of<FetchProudectByIdBloc>(context).add(FetchproudctyByIDDEvenet(proudctId: widget.productId));
   print('inkwall');
+  setState(() {
+    
+  });
       },
       child: Container(
         margin: const EdgeInsets.all(8),
