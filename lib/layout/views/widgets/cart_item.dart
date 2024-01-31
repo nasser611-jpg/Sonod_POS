@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 
 class CartItem extends StatelessWidget {
   final int count;
   final String proudctName;
   final String unit;
   final double price;
+  final int proudctId;
   CartItem({
     super.key,
     this.isSelected = false,
@@ -14,6 +14,7 @@ class CartItem extends StatelessWidget {
     required this.proudctName,
     required this.unit,
     required this.price,
+    required this.proudctId,
   });
   TextEditingController quantity = TextEditingController(text: '1');
   final bool isSelected;
@@ -74,12 +75,14 @@ class CartItem extends StatelessWidget {
                 )),
             Expanded(
                 flex: 2,
-                child: TextField(onSubmitted: (value) {
-                       num valueOffcail = num.parse(value);
-                       BlocProvider.of<FetchProudectByIdBloc>(context).quantity=valueOffcail;
+                child: TextField(
+                    onSubmitted: (value) {
+                      num valueOffcail = num.parse(value);
+                      featchBlocById(context).quantity = valueOffcail;
+
                       print(value);
-                },
-                  
+                      print('id is $proudctId');
+                    },
                     textAlign: TextAlign.end,
                     controller: quantity,
                     keyboardType: TextInputType.number,

@@ -9,3 +9,6 @@ final int proudctId;
 
   FetchproudctyByIDDEvenet({required this.proudctId});
 }
+class FetchTotalPriceEvent extends FetchProudectByIdEvent{
+  
+}

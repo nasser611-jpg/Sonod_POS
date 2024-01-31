@@ -11,7 +11,7 @@ class FetchProudectByIdBloc
   List<double> totals = [];
   num quantity = 1;
   double total = 0.0;
-
+  double stayedAmount = 0.0;
   FetchProudectByIdBloc() : super(FetchProudectByIdInitial()) {
     List<Product> products = <Product>[];
     on<FetchProudectByIdEvent>((event, emit) async {
@@ -22,8 +22,8 @@ class FetchProudectByIdBloc
 
           emit(ProudectsLoadedByIdState(prodcts: products));
         } catch (e) {}
-      } else {
-        emit(LoadingFetchProductById());
+      } else if(event is FetchTotalPriceEvent){
+        emit(FetchTotalPriceState());
       }
     });
   }

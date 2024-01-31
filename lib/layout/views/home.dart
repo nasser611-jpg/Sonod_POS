@@ -25,8 +25,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController paidAmountController = TextEditingController();
-  double total = 0.0;
-  double staydAmount = 0.0;
 
   ScrollController? controller = ScrollController();
   late StreamController<String> _streamController;
@@ -284,33 +282,45 @@ class _HomeState extends State<Home> {
                       builder: (context, state) {
                         log('the satae is $state');
                         if (state is ProudectsLoadedByIdState) {
-                          print('${featchBlocById(context).quantity}');
-                        
-                           
-                          
+                          double total = 0.0;
+                          num quantity = featchBlocById(context).quantity;
+
+                          // Iterate through the products and accumulate the total price
+                          for (var product in state.prodcts) {
+                            // Calculate the total for each product based on quantity
+                            double itemTotal =
+                                (product.price as double) * quantity;
+                            total += itemTotal;
+                          }
+                          featchBlocById(context).total = total;
+
+                          print('Total Price: $total');
+
                           return Expanded(
-                              child: ListView.builder(
-                                  itemCount: state.prodcts.length,
-                                  itemBuilder: (
-                                    context,
-                                    index,
-                                  ) {
-                                  
-                                    return CartItem(
-                                      count: index,
-                                      proudctName:
-                                          state.prodcts[index].productName,
-                                      price:
-                                          state.prodcts[index].price as double,
-                                      unit:
-                                          state.prodcts[index].unit.toString(),
-                                    );
-                                  }));
+                            child: ListView.builder(
+                              itemCount: state.prodcts.length,
+                              itemBuilder: (
+                                context,
+                                index,
+                              ) {
+                                return CartItem(
+                                  proudctId:
+                                      state.prodcts[index].productId as int,
+                                  count: index,
+                                  proudctName: state.prodcts[index].productName,
+                                  price: state.prodcts[index].price as double,
+                                  unit: state.prodcts[index].unit.toString(),
+                                );
+                              },
+                            ),
+                          );
                         }
+
                         return const Expanded(
-                            child: Center(
-                          child: Text('لا توجد عناصر مضافه...'),
-                        ));
+                          child: Center(
+                            child: Text('لا توجد عناصر مضافه...'),
+                          ),
+                        );
                       },
                     ),
 
@@ -347,12 +357,14 @@ class _HomeState extends State<Home> {
                                       FetchProudectByIdState>(
                                     builder: (context, state) {
                                       if (state is ProudectsLoadedByIdState) {
-                                        return Text("$total",
+                                        print(state);
+                                        return Text(
+                                            "${featchBlocById(context).total}",
                                             style: const TextStyle(
                                                 color: Color(0xff374957),
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 15));
-                                      }else {
+                                      } else {
                                         return const Text("0.0",
                                             style: TextStyle(
                                                 color: Color(0xff374957),
@@ -380,7 +392,7 @@ class _HomeState extends State<Home> {
                                           padding:
                                               EdgeInsets.symmetric(vertical: 8),
                                           child: Text(
-                                            "مبلغ المدفوع",
+                                            "المبلغ المدفوع",
                                             style: TextStyle(
                                                 color: Color(0xff5E5E5E)),
                                           ),
@@ -398,6 +410,18 @@ class _HomeState extends State<Home> {
                                               color: Colors.white),
                                           child: TextField(
                                               controller: paidAmountController,
+                                              onChanged: (value) {
+                                                double valueOffcail =
+                                                    double.parse(value);
+                                                featchBlocById(context)
+                                                        .stayedAmount =
+                                                    valueOffcail -
+                                                        featchBlocById(context)
+                                                            .total;
+                                                print(
+                                                    '${featchBlocById(context).stayedAmount}');
+                                                    
+                                              },
                                               style: const TextStyle(
                                                   color: Color(0xff374957),
                                                   fontWeight: FontWeight.bold,
@@ -415,12 +439,12 @@ class _HomeState extends State<Home> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Padding(
-                                          padding:
-                                              EdgeInsets.symmetric(vertical: 8),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8),
                                           child: Text(
-                                            "المتبقي ",
-                                            style: TextStyle(
+                                            'المبلغ المتبقي',
+                                            style: const TextStyle(
                                                 color: Color(0xff5E5E5E)),
                                           ),
                                         ),
@@ -435,12 +459,32 @@ class _HomeState extends State<Home> {
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                               color: Colors.white),
-                                          child: Text(staydAmount.toString(),
-                                              style: const TextStyle(
-                                                  color: Color(
-                                                      0xffEB1E4B), // Color(0xff374957),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15)),
+                                          child: BlocBuilder<
+                                              FetchProudectByIdBloc,
+                                              FetchProudectByIdState>(
+                                            builder: (context, state) {
+                                              if (state
+                                                  is FetchproudctyByIDDEvenet) {
+                                                return Text(
+                                                    '${featchBlocById(context).stayedAmount}',
+                                                    style: const TextStyle(
+                                                        color: Color(
+                                                            0xffEB1E4B), // Color(0xff374957),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15));
+                                              }else{
+                                                return Text(
+                                                    '${featchBlocById(context).stayedAmount}',
+                                                    style: const TextStyle(
+                                                        color: Color(
+                                                            0xffEB1E4B), // Color(0xff374957),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15));
+                                              }
+                                            },
+                                          ),
                                         )
                                       ],
                                     ),

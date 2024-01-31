@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
 
 class ProductItem extends StatefulWidget {
@@ -20,7 +20,7 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-  BlocProvider.of<FetchProudectByIdBloc>(context).add(FetchproudctyByIDDEvenet(proudctId: widget.productId));
+featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: widget.productId));
   print('inkwall');
   setState(() {
     
@@ -37,6 +37,9 @@ class _ProductItemState extends State<ProductItem> {
         ),
         child: GestureDetector(
           onTap:() {
+            featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: widget.productId));
+            
+
           },
           child: Column(children: [
             Expanded(

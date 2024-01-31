@@ -14,3 +14,4 @@ class ProudectsLoadedByIdState extends FetchProudectByIdState {
   const ProudectsLoadedByIdState({required this.prodcts});
 }
 final class LoadingFetchProductById extends FetchProudectByIdState {}
+final class FetchTotalPriceState extends FetchProudectByIdState {}
