@@ -5,6 +5,7 @@ import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
+// ignore: must_be_immutable
 class ProudctsItems extends StatelessWidget {
   ProudctsItems({Key? key}) : super(key: key);
   ScrollController? controller = ScrollController();

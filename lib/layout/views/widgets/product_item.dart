@@ -38,7 +38,7 @@ featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: widget.productId
         child: GestureDetector(
           onTap:() {
             featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: widget.productId));
-            
+            print('proudct clicked');
 
           },
           child: Column(children: [

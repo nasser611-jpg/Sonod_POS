@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:sonod_point_of_sell/Database/init_database.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sonod_point_of_sell/generated/l10n.dart';
 import 'package:sonod_point_of_sell/layout/views/home.dart';
+import 'package:sonod_point_of_sell/Database/init_database.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
-import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:window_manager/window_manager.dart';
 void main() async {
   //  Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<FetchProudectByIdBloc>(
           create: (context) =>FetchProudectByIdBloc()
         ),
+        
    
    
       ],

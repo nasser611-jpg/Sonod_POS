@@ -18,14 +18,22 @@ class _CategoriesState extends State<Categories> {
   int activeIndex = 0;
   @override
   Widget build(BuildContext context) {
-        BlocProvider.of<ProductsBloc>(context).add(FeatchCalssesEvent());
+    BlocProvider.of<ProductsBloc>(context).add(FeatchCalssesEvent());
     return Container(
       height: 84,
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
+          color: Colors.white,
+          //---
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x33374957),
+              blurRadius: 4,
+              offset: Offset(0, 0),
+              spreadRadius: 0,
+            )
+          ]),
       child: Row(
         children: [
           BlocBuilder<ProductsBloc, ProductsState>(
@@ -41,7 +49,7 @@ class _CategoriesState extends State<Categories> {
                         activeIndex = index;
 
                         BlocProvider.of<UiBloc>(context)
-                            .add(FeatchProductsEvent(classId:  index + 1));
+                            .add(FeatchProductsEvent(classId: index + 1));
 
                         setState(() {});
                       },
@@ -80,9 +88,10 @@ class _CategoriesState extends State<Categories> {
                     ),
                   ),
                 );
-              }
-              else{
-                return const Center(child: CircularProgressIndicator(),);
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
             },
           ),

@@ -1,20 +1,26 @@
 import 'dart:async';
-import 'dart:developer';
-
+import '../app_layout.dart';
+import 'widgets/menu_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:sonod_point_of_sell/core/util/time.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
+import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
 import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/proudcts_items_widget.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
-import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
-import 'package:window_manager/window_manager.dart';
 
-import '../app_layout.dart';
-import 'widgets/menu_item.dart';
+
+
+
+
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,8 +30,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  TextEditingController paidAmountController = TextEditingController();
-
   ScrollController? controller = ScrollController();
   late StreamController<String> _streamController;
   late Stream<String> _stream;
@@ -33,6 +37,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     BlocProvider.of<UiBloc>(context).add(FeatchProductsEvent(classId: 1));
+
+    featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: 0));
 
     super.initState();
 
@@ -47,8 +53,10 @@ class _HomeState extends State<Home> {
     });
   }
 
+  double stayedAmount = 0;
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +100,7 @@ class _HomeState extends State<Home> {
                       children: [
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(" اوبزنس ",
+                          child: Text(" RESTURANT",
                               style: TextStyle(color: Colors.white)),
                         ),
                         Container(
@@ -151,253 +159,209 @@ class _HomeState extends State<Home> {
                 decoration: const BoxDecoration(
                     border: Border(
                         right: BorderSide(width: 1, color: Color(0xffE7E7E7)))),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 84,
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFFAFA6A6),
-                            blurRadius: 4,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                          )
-                        ],
-                        gradient: LinearGradient(
-                          begin: Alignment(0.00, -1.00),
-                          end: Alignment(0, 1),
-                          colors: [Color(0xFF2D969B), Color(0xFF2D7F9B)],
-                        ),
-                      ),
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(bottom: 6.0),
-                                        child: Text(
-                                          "رقم الفاتورة",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 32,
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            color: Colors.white),
-                                        child: const Text("1205",
-                                            style: TextStyle(
-                                                color: Color(0xff2D969B),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15)),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                            Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.only(bottom: 6.0),
-                                        child: Text(
-                                          "نوع الفاتورة",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 32,
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            color: Colors.white),
-                                        child: const Text("نقداً",
-                                            style: TextStyle(
-                                                color: Color(0xff2D969B),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15)),
-                                      )
-                                    ],
-                                  ),
-                                )),
-                          ]),
-                    ),
-
-                    Container(
-                        height: 34,
-                        color: const Color(0xff374957),
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: const Row(
-                          children: [
-                            Expanded(
-                                flex: 7,
-                                child: Text(
-                                  "       الصنف",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Expanded(
-                                flex: 4,
-                                child: Text(
-                                  "الوحدة ",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Expanded(
-                                flex: 3,
-                                child: Text(
-                                  "السعر",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                            Expanded(
-                                flex: 2,
-                                child: Text(
-                                  "الكمية",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ],
-                        )),
-
-                    // Cart Items
-
+                child:
                     BlocBuilder<FetchProudectByIdBloc, FetchProudectByIdState>(
-                      builder: (context, state) {
-                        log('the satae is $state');
-                        if (state is ProudectsLoadedByIdState) {
-                          double total = 0.0;
-                          num quantity = featchBlocById(context).quantity;
+                  builder: (context, state) {
+                    if (state is ProudectsLoadedByIdState) {
+                      List<model.Product>? pr = state.prodcts;
+                      List<FormattedProduct>? formattedProducts =
+                          ProductFormatter.formatProducts(pr.cast<Product>());
 
-                          // Iterate through the products and accumulate the total price
-                          for (var product in state.prodcts) {
-                            // Calculate the total for each product based on quantity
-                            double itemTotal =
-                                (product.price as double) * quantity;
-                            total += itemTotal;
-                          }
-                          featchBlocById(context).total = total;
 
-                          print('Total Price: $total');
+                      double total = 0.0;
 
-                          return Expanded(
+                  
+                      for (var product in state.prodcts) {
+                        double itemTotal = product.price as double;
+                        total += itemTotal;
+                      }
+                      featchBlocById(context).total = total;
+
+                      return Column(
+                        children: [
+                          Container(
+                            height: 84,
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            decoration: const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFFAFA6A6),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 0),
+                                  spreadRadius: 0,
+                                )
+                              ],
+                              gradient: LinearGradient(
+                                begin: Alignment(0.00, -1.00),
+                                end: Alignment(0, 1),
+                                colors: [Color(0xFF2D969B), Color(0xFF2D7F9B)],
+                              ),
+                            ),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 6.0),
+                                              child: Text(
+                                                "رقم الفاتورة",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  color: Colors.white),
+                                              child: const Text("1205",
+                                                  style: TextStyle(
+                                                      color: Color(0xff2D969B),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15)),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  Expanded(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 6.0),
+                                              child: Text(
+                                                "نوع الفاتورة",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 32,
+                                              width: double.infinity,
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  color: Colors.white),
+                                              child: const Text("نقداً",
+                                                  style: TextStyle(
+                                                      color: Color(0xff2D969B),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15)),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                ]),
+                          ),
+
+                          Container(
+                              height: 34,
+                              color: const Color(0xff374957),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              child: const Row(
+                                children: [
+                                  Expanded(
+                                      flex: 7,
+                                      child: Text(
+                                        "الصنف",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        "الوحدة",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "السعر",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        "الكمية",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                ],
+                              )),
+
+                          // Cart Items
+
+                          Expanded(
                             child: ListView.builder(
                               itemCount: state.prodcts.length,
                               itemBuilder: (
                                 context,
                                 index,
                               ) {
-                                return CartItem(
-                                  proudctId:
-                                      state.prodcts[index].productId as int,
-                                  count: index,
-                                  proudctName: state.prodcts[index].productName,
-                                  price: state.prodcts[index].price as double,
-                                  unit: state.prodcts[index].unit.toString(),
-                                );
+                                if (index >= 0 &&
+                                    index < formattedProducts.length) {
+                                  return CartItem(
+                                    quantity: formattedProducts[index].count,
+                                    proudctId:
+                                        state.prodcts[index].productId as int,
+                                    count: index,
+                                    proudctName: formattedProducts[index]
+                                        .productName
+                                        .toString(),
+                                    price: formattedProducts[index].totalPrice,
+                                    unit: formattedProducts[index]
+                                        .unit
+                                        .toString(),
+                                  );
+                                }
                               },
                             ),
-                          );
-                        }
-
-                        return const Expanded(
-                          child: Center(
-                            child: Text('لا توجد عناصر مضافه...'),
                           ),
-                        );
-                      },
-                    ),
 
-                    Container(height: 2, color: const Color(0xffE7E7E7)),
-                    Container(
-                      height: 350,
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      color: const Color(0xffF5F5F5),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ////
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8),
-                                  child: Text(
-                                    "مبلغ الفاتورة",
-                                    style: TextStyle(color: Color(0xff5E5E5E)),
-                                  ),
-                                ),
-                                Container(
-                                  height: 32,
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: const Color(0xffD9D9D9)),
-                                      borderRadius: BorderRadius.circular(4),
-                                      color: Colors.white),
-                                  child: BlocBuilder<FetchProudectByIdBloc,
-                                      FetchProudectByIdState>(
-                                    builder: (context, state) {
-                                      if (state is ProudectsLoadedByIdState) {
-                                        print(state);
-                                        return Text(
-                                            "${featchBlocById(context).total}",
-                                            style: const TextStyle(
-                                                color: Color(0xff374957),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15));
-                                      } else {
-                                        return const Text("0.0",
-                                            style: TextStyle(
-                                                color: Color(0xff374957),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15));
-                                      }
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-
-                            ///
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Padding(
-                                          padding:
-                                              EdgeInsets.symmetric(vertical: 8),
-                                          child: Text(
-                                            "المبلغ المدفوع",
-                                            style: TextStyle(
-                                                color: Color(0xff5E5E5E)),
-                                          ),
+                          Container(height: 2, color: const Color(0xffE7E7E7)),
+                          Container(
+                            height: 350,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                            color: const Color(0xffF5F5F5),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ////
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 8),
+                                        child: Text(
+                                          "مبلغ الفاتورة",
+                                          style: TextStyle(
+                                              color: Color(0xff5E5E5E)),
                                         ),
-                                        Container(
+                                      ),
+                                      Container(
                                           height: 32,
                                           width: double.infinity,
                                           padding: const EdgeInsets.all(4),
@@ -408,100 +372,148 @@ class _HomeState extends State<Home> {
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                               color: Colors.white),
-                                          child: TextField(
-                                              controller: paidAmountController,
-                                              onChanged: (value) {
-                                                double valueOffcail =
-                                                    double.parse(value);
-                                                featchBlocById(context)
-                                                        .stayedAmount =
-                                                    valueOffcail -
-                                                        featchBlocById(context)
-                                                            .total;
-                                                print(
-                                                    '${featchBlocById(context).stayedAmount}');
-                                                    
-                                              },
+                                          child: Text(
+                                              "${featchBlocById(context).total}",
                                               style: const TextStyle(
                                                   color: Color(0xff374957),
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 15)),
-                                        )
-                                      ],
-                                    ),
+                                                  fontSize: 15)))
+                                    ],
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8),
-                                          child: Text(
-                                            'المبلغ المتبقي',
-                                            style: const TextStyle(
-                                                color: Color(0xff5E5E5E)),
+
+                                  ///
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 8),
+                                                child: Text(
+                                                  "المبلغ المدفوع",
+                                                  style: TextStyle(
+                                                      color: Color(0xff5E5E5E)),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 32,
+                                                width: double.infinity,
+                                                padding:
+                                                    const EdgeInsets.all(4),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: const Color(
+                                                            0xffD9D9D9)),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    color: Colors.white),
+                                                child: Text(
+                                                  '${featchBlocById(context).paidAmountController}',
+                                                  style: const TextStyle(
+                                                      color: Color(0xff374957),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15),
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
-                                        Container(
-                                          height: 32,
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color:
-                                                      const Color(0xffD9D9D9)),
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              color: Colors.white),
-                                          child: BlocBuilder<
-                                              FetchProudectByIdBloc,
-                                              FetchProudectByIdState>(
-                                            builder: (context, state) {
-                                              if (state
-                                                  is FetchproudctyByIDDEvenet) {
-                                                return Text(
-                                                    '${featchBlocById(context).stayedAmount}',
-                                                    style: const TextStyle(
-                                                        color: Color(
-                                                            0xffEB1E4B), // Color(0xff374957),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 15));
-                                              }else{
-                                                return Text(
-                                                    '${featchBlocById(context).stayedAmount}',
-                                                    style: const TextStyle(
-                                                        color: Color(
-                                                            0xffEB1E4B), // Color(0xff374957),
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 15));
-                                              }
-                                            },
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 8),
+                                                child: Text(
+                                                  'المبلغ المتبقي',
+                                                  style: TextStyle(
+                                                      color: Color(0xff5E5E5E)),
+                                                ),
+                                              ),
+                                              Container(
+                                                  height: 32,
+                                                  width: double.infinity,
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: const Color(
+                                                              0xffD9D9D9)),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      color: Colors.white),
+                                                  child: Text(
+                                                      '${stayedAmount}',
+                                                      style: const TextStyle(
+                                                          color: Color(
+                                                              0xffEB1E4B), // Color(0xff374957),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 15)))
+                                            ],
                                           ),
-                                        )
-                                      ],
-                                    ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
 
-                            const SizedBox(height: 16),
+                                  const SizedBox(height: 16),
 
-                            ///
-                            Keyboard(
-                              onTap: (value) => log(value),
-                            )
-                          ]),
-                    )
-                  ],
+                                  Keyboard(onTap: (value) {
+                                    if (value == 'تصفير') {
+                                      featchBlocById(context)
+                                          .paidAmountController = 0.0;
+                                    } else if (value == 'حذف') {
+                                      // Handle delete logic if needed
+                                    } else {
+                                      double valueOffcail = double.parse(value);
+                                      double currentAmount =
+                                          featchBlocById(context)
+                                              .paidAmountController;
+
+                                      // Concatenate the current amount and the pressed value
+                                      double newValue =
+                                          currentAmount * 10 + valueOffcail;
+
+                                      // Update the paidAmountController with the new concatenated value
+                                      featchBlocById(context)
+                                          .paidAmountController = newValue;
+                                    }
+
+                                    // Print the updated paidAmountController value
+                                    print(
+                                        'the value is ${featchBlocById(context).paidAmountController}');
+                                        stayedAmount=featchBlocById(context).total-featchBlocById(context).paidAmountController;
+                                       
+                                    // Trigger the FetchproudctyByIDDEvenet event with the updated paidAmountController
+                                    featchBlocById(context).add(
+                                        FetchproudctyByIDDEvenet(proudctId: 0));
+                                  })
+                                ]),
+                          )
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('there  is no state'),
+                      );
+                    }
+                  },
                 ),
               )
             ],

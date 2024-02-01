@@ -9,29 +9,31 @@ part 'fetch_proudect_by_id_state.dart';
 class FetchProudectByIdBloc
     extends Bloc<FetchProudectByIdEvent, FetchProudectByIdState> {
   List<double> totals = [];
-  num quantity = 1;
   double total = 0.0;
-  double stayedAmount = 0.0;
+  double paidAmountController=0;
+  
   FetchProudectByIdBloc() : super(FetchProudectByIdInitial()) {
+
     List<Product> products = <Product>[];
     on<FetchProudectByIdEvent>((event, emit) async {
       if (event is FetchproudctyByIDDEvenet) {
         try {
           LoadingFetchProductById();
           products.addAll(await getProductsByProductId(event.proudctId));
+          // Example usage:
+// List<Product> products = ...; // Your list of products
+//  List<f.FormattedProduct> formattedProducts = f.ProductFormatter.formatProducts(products.cast<f.Product>());
 
-          emit(ProudectsLoadedByIdState(prodcts: products));
-        } catch (e) {}
+//  print(formattedProducts);
+      emit(ProudectsLoadedByIdState(prodcts: products));
+
+        } catch (e) {
+
+        }
       } else if(event is FetchTotalPriceEvent){
         emit(FetchTotalPriceState());
       }
     });
   }
-  // @override
-  // void onTransition(
-  //     Transition<FetchProudectByIdEvent, FetchProudectByIdState> transition) {
-  //   super.onTransition(transition);
-  //   // Add a print statement to debug the transitions
-  //   print(transition);
-  // }
+
 }

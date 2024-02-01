@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 
+// ignore: must_be_immutable
 class CartItem extends StatelessWidget {
   final int count;
   final String proudctName;
   final String unit;
   final double price;
   final int proudctId;
+  final int quantity;
   CartItem({
     super.key,
     this.isSelected = false,
@@ -14,11 +15,11 @@ class CartItem extends StatelessWidget {
     required this.proudctName,
     required this.unit,
     required this.price,
-    required this.proudctId,
+    required this.proudctId, required this.quantity,
   });
-  TextEditingController quantity = TextEditingController(text: '1');
+   
   final bool isSelected;
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -75,17 +76,8 @@ class CartItem extends StatelessWidget {
                 )),
             Expanded(
                 flex: 2,
-                child: TextField(
-                    onSubmitted: (value) {
-                      num valueOffcail = num.parse(value);
-                      featchBlocById(context).quantity = valueOffcail;
-
-                      print(value);
-                      print('id is $proudctId');
-                    },
-                    textAlign: TextAlign.end,
-                    controller: quantity,
-                    keyboardType: TextInputType.number,
+                child: Text(
+                           '$quantity',textAlign:TextAlign.left ,
                     style: TextStyle(
                         color: isSelected
                             ? const Color(0xff2D969B)
