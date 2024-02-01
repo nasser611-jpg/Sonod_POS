@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 
 // ignore: must_be_immutable
 class CartItem extends StatelessWidget {
@@ -51,7 +52,7 @@ class CartItem extends StatelessWidget {
                 child: Text(
                   proudctName,
                   style: TextStyle(
-                      color: isSelected
+                      color: featchBlocById(context).isSelected
                           ? const Color(0xff2D969B)
                           : const Color(0xff5E5E5E)),
                 )),
@@ -60,7 +61,7 @@ class CartItem extends StatelessWidget {
                 child: Text(
                   unit,
                   style: TextStyle(
-                      color: isSelected
+                      color: featchBlocById(context).isSelected
                           ? const Color(0xff2D969B)
                           : const Color(0xff5E5E5E)),
                 )),
@@ -69,7 +70,7 @@ class CartItem extends StatelessWidget {
                 child: Text(
                   price.toString(),
                   style: TextStyle(
-                      color: isSelected
+                      color: featchBlocById(context).isSelected
                           ? const Color(0xff2D969B)
                           : const Color(0xff5E5E5E),
                       fontWeight: FontWeight.bold),
@@ -82,7 +83,9 @@ class CartItem extends StatelessWidget {
                         color: isSelected
                             ? const Color(0xff2D969B)
                             : const Color(0xff5E5E5E),
-                        fontWeight: FontWeight.bold)))
+                        fontWeight: FontWeight.bold)
+                        
+                        ))
           ]),
         ));
   }

@@ -1,20 +1,24 @@
 import 'dart:async';
-import '../app_layout.dart';
-import 'widgets/menu_item.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:sonod_point_of_sell/core/util/time.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
-import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
+import 'package:sonod_point_of_sell/core/util/time.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/proudcts_items_widget.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:window_manager/window_manager.dart';
+
+import '../app_layout.dart';
+import 'widgets/menu_item.dart';
+
+
 
 
 
@@ -56,7 +60,6 @@ class _HomeState extends State<Home> {
   double stayedAmount = 0;
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,11 +170,11 @@ class _HomeState extends State<Home> {
                       List<FormattedProduct>? formattedProducts =
                           ProductFormatter.formatProducts(pr.cast<Product>());
 
-
                       double total = 0.0;
 
-                  
+                      // Iterate through the products and accumulate the total price
                       for (var product in state.prodcts) {
+                        // Calculate the total for each product based on quantity
                         double itemTotal = product.price as double;
                         total += itemTotal;
                       }
@@ -320,18 +323,26 @@ class _HomeState extends State<Home> {
                               ) {
                                 if (index >= 0 &&
                                     index < formattedProducts.length) {
-                                  return CartItem(
-                                    quantity: formattedProducts[index].count,
-                                    proudctId:
-                                        state.prodcts[index].productId as int,
-                                    count: index,
-                                    proudctName: formattedProducts[index]
-                                        .productName
-                                        .toString(),
-                                    price: formattedProducts[index].totalPrice,
-                                    unit: formattedProducts[index]
-                                        .unit
-                                        .toString(),
+                                  return GestureDetector(
+                                    onTap: () {
+                                      featchBlocById(context).isSelected=true;
+                                   
+                                    },
+                                    child: CartItem(
+                                     
+                                      quantity: formattedProducts[index].count,
+                                      proudctId:
+                                          state.prodcts[index].productId as int,
+                                      count: index,
+                                      proudctName: formattedProducts[index]
+                                          .productName
+                                          .toString(),
+                                      price:
+                                          formattedProducts[index].totalPrice,
+                                      unit: formattedProducts[index]
+                                          .unit
+                                          .toString(),
+                                    ),
                                   );
                                 }
                               },
@@ -457,8 +468,7 @@ class _HomeState extends State<Home> {
                                                           BorderRadius.circular(
                                                               4),
                                                       color: Colors.white),
-                                                  child: Text(
-                                                      '${stayedAmount}',
+                                                  child: Text('${stayedAmount}',
                                                       style: const TextStyle(
                                                           color: Color(
                                                               0xffEB1E4B), // Color(0xff374957),
@@ -498,8 +508,11 @@ class _HomeState extends State<Home> {
                                     // Print the updated paidAmountController value
                                     print(
                                         'the value is ${featchBlocById(context).paidAmountController}');
-                                        stayedAmount=featchBlocById(context).total-featchBlocById(context).paidAmountController;
-                                       
+                                    stayedAmount =
+                                        featchBlocById(context).total -
+                                            featchBlocById(context)
+                                                .paidAmountController;
+
                                     // Trigger the FetchproudctyByIDDEvenet event with the updated paidAmountController
                                     featchBlocById(context).add(
                                         FetchproudctyByIDDEvenet(proudctId: 0));

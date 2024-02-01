@@ -11,7 +11,7 @@ class FetchProudectByIdBloc
   List<double> totals = [];
   double total = 0.0;
   double paidAmountController=0;
-  
+  bool isSelected=false;
   FetchProudectByIdBloc() : super(FetchProudectByIdInitial()) {
 
     List<Product> products = <Product>[];
