@@ -26,6 +26,18 @@ import 'widgets/menu_item.dart';
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -58,8 +70,10 @@ class _HomeState extends State<Home> {
   }
 
   double stayedAmount = 0;
+  int selectedIndex = -1;
   @override
   Widget build(BuildContext context) {
+    bool isSelected = false;
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +183,9 @@ class _HomeState extends State<Home> {
                       List<model.Product>? pr = state.prodcts;
                       List<FormattedProduct>? formattedProducts =
                           ProductFormatter.formatProducts(pr.cast<Product>());
-
+                          for (var element in formattedProducts) {
+                            print('the added${element.productName}');
+                          }
                       double total = 0.0;
 
                       // Iterate through the products and accumulate the total price
@@ -316,35 +332,50 @@ class _HomeState extends State<Home> {
 
                           Expanded(
                             child: ListView.builder(
-                              itemCount: state.prodcts.length,
+                              itemCount: formattedProducts.length,
                               itemBuilder: (
                                 context,
                                 index,
                               ) {
-                                if (index >= 0 &&
-                                    index < formattedProducts.length) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      featchBlocById(context).isSelected=true;
-                                   
-                                    },
-                                    child: CartItem(
-                                     
-                                      quantity: formattedProducts[index].count,
-                                      proudctId:
-                                          state.prodcts[index].productId as int,
-                                      count: index,
-                                      proudctName: formattedProducts[index]
-                                          .productName
-                                          .toString(),
-                                      price:
-                                          formattedProducts[index].totalPrice,
-                                      unit: formattedProducts[index]
-                                          .unit
-                                          .toString(),
-                                    ),
-                                  );
-                                }
+                                List<FormattedProduct> fo = [];
+                                return GestureDetector(
+                                  onTap: () {
+                                    final featchBloc = featchBlocById(context);
+
+                                    if (isSelected) {
+                                      featchBloc.proudctSelectedId = 0;
+                                      featchBloc.add(FetchproudctyByIDDEvenet(
+                                          proudctId: 0));
+                                    } else {
+                                      featchBloc.proudctSelectedId =
+                                          formattedProducts[index].productId!;
+
+                                      formattedProducts.removeWhere(
+                                          (product) => product.productId == 2);
+
+                                      featchBloc.add(FetchproudctyByIDDEvenet(
+                                          proudctId: 0));
+                                    }
+
+                                    isSelected = !isSelected;
+                                  },
+                                  child: CartItem(
+                                    isSelected: featchBlocById(context)
+                                            .proudctSelectedId ==
+                                        formattedProducts[index].productId,
+                                    quantity: formattedProducts[index].count,
+                                    proudctId: formattedProducts[index]
+                                        .productId as int,
+                                    count: index,
+                                    proudctName: formattedProducts[index]
+                                        .productName
+                                        .toString(),
+                                    price: formattedProducts[index].totalPrice,
+                                    unit: formattedProducts[index]
+                                        .unit
+                                        .toString(),
+                                  ),
+                                );
                               },
                             ),
                           ),
@@ -489,7 +520,22 @@ class _HomeState extends State<Home> {
                                       featchBlocById(context)
                                           .paidAmountController = 0.0;
                                     } else if (value == 'حذف') {
-                                      // Handle delete logic if needed
+                                      {
+                                    for (var element in formattedProducts) {
+                                      print(element.productName);
+                                    }
+                                        print(
+                                            'the proudct id is ${featchBlocById(context).proudctSelectedId}');
+                                        formattedProducts.removeWhere(
+                                            (product) =>
+                                                product.productId ==
+                                                featchBlocById(context)
+                                                    .proudctSelectedId);
+                                        featchBlocById(context).add(
+                                            FetchproudctyByIDDEvenet(
+                                                proudctId: 0));
+                                        print('Delete clicked');
+                                      }
                                     } else {
                                       double valueOffcail = double.parse(value);
                                       double currentAmount =

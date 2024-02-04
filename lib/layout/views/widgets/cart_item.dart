@@ -11,18 +11,20 @@ class CartItem extends StatelessWidget {
   final int quantity;
   CartItem({
     super.key,
-    this.isSelected = false,
+    required this.isSelected,
     this.count = 0,
     required this.proudctName,
     required this.unit,
     required this.price,
-    required this.proudctId, required this.quantity,
+    required this.proudctId,
+    required this.quantity,
   });
-   
-  final bool isSelected;
-  
+
+  bool isSelected;
+
   @override
   Widget build(BuildContext context) {
+  
     return Container(
         width: double.infinity,
         height: 38,
@@ -77,15 +79,13 @@ class CartItem extends StatelessWidget {
                 )),
             Expanded(
                 flex: 2,
-                child: Text(
-                           '$quantity',textAlign:TextAlign.left ,
+                child: Text('$quantity',
+                    textAlign: TextAlign.left,
                     style: TextStyle(
                         color: isSelected
                             ? const Color(0xff2D969B)
                             : const Color(0xff5E5E5E),
-                        fontWeight: FontWeight.bold)
-                        
-                        ))
+                        fontWeight: FontWeight.bold)))
           ]),
         ));
   }

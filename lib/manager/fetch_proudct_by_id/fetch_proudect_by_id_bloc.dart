@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 
 part 'fetch_proudect_by_id_event.dart';
 part 'fetch_proudect_by_id_state.dart';
@@ -12,6 +12,8 @@ class FetchProudectByIdBloc
   double total = 0.0;
   double paidAmountController=0;
   bool isSelected=false;
+  int proudctSelectedId=0;
+  bool isDeleteProduct=false;
   FetchProudectByIdBloc() : super(FetchProudectByIdInitial()) {
 
     List<Product> products = <Product>[];
@@ -20,13 +22,10 @@ class FetchProudectByIdBloc
         try {
           LoadingFetchProductById();
           products.addAll(await getProductsByProductId(event.proudctId));
-          // Example usage:
-// List<Product> products = ...; // Your list of products
-//  List<f.FormattedProduct> formattedProducts = f.ProductFormatter.formatProducts(products.cast<f.Product>());
 
-//  print(formattedProducts);
       emit(ProudectsLoadedByIdState(prodcts: products));
 
+        // ignore: empty_catches
         } catch (e) {
 
         }
@@ -34,6 +33,13 @@ class FetchProudectByIdBloc
         emit(FetchTotalPriceState());
       }
     });
+
+
   }
+
+
+
+
+
 
 }
