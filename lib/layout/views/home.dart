@@ -8,6 +8,8 @@ import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 import 'package:sonod_point_of_sell/core/util/time.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/keyboard.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/optional_bar.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/proudcts_items_widget.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
@@ -317,9 +319,7 @@ class _HomeState extends State<Home> {
                               ) {
                                 return GestureDetector(
                                   onTap: () {
-                                    for (var element in formattedProducts) {
-                                      print('before${element.count}');
-                                    }
+                                 
                                     final featchBloc = featchBlocById(context);
 
                                     if (isSelected) {
@@ -582,133 +582,6 @@ class _HomeState extends State<Home> {
             ],
           )),
         ],
-      ),
-    );
-  }
-}
-
-class Keyboard extends StatefulWidget {
-  const Keyboard({
-    super.key,
-    required this.onTap,
-  });
-
-  final Function(String) onTap;
-
-  @override
-  State<Keyboard> createState() => _KeyboardState();
-}
-
-class _KeyboardState extends State<Keyboard> {
-  List<String> keyname = [
-    "تصفير",
-    "9",
-    "8",
-    "7",
-    "0",
-    "6",
-    "5",
-    "4",
-    "حذف",
-    "3",
-    "2",
-    "1"
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-        child: GridView.builder(
-            itemCount: 12,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4, childAspectRatio: 1.6),
-            itemBuilder: (context, index) => InkWell(
-                  onTap: () => widget.onTap(keyname[index]),
-                  child: Container(
-                    margin: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        color: const Color(0xff374957)),
-                    child: Center(
-                        child: Text(keyname[index],
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ))),
-                  ),
-                )));
-  }
-}
-
-class OptionBar extends StatelessWidget {
-  const OptionBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 90,
-      padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x33374957),
-            blurRadius: 4,
-            offset: Offset(0, 0),
-            spreadRadius: 0,
-          )
-        ],
-      ),
-      child: const Row(children: [
-        BtnOptionBar(
-            color: Color(0xff2D969B),
-            iconPath: "assets/icons/floppy_disks.svg",
-            child: "حفظ الفاتورة"),
-        BtnOptionBar(
-          color: Color(0xffEB1E4B),
-          iconPath: "assets/icons/trash.svg",
-          child: "الغاء الفاتورة",
-        ),
-      ]),
-    );
-  }
-}
-
-class BtnOptionBar extends StatelessWidget {
-  const BtnOptionBar({
-    super.key,
-    required this.color,
-    required this.iconPath,
-    required this.child,
-  });
-
-  final Color color;
-  final String iconPath;
-  final String child;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        height: double.infinity,
-        width: 120,
-        padding: const EdgeInsets.all(8),
-        decoration:
-            BoxDecoration(color: color, borderRadius: BorderRadius.circular(6)),
-        child: Row(children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SvgPicture.asset(iconPath),
-          ),
-          Expanded(
-              child: Text(
-            child,
-            style: const TextStyle(color: Colors.white),
-          ))
-        ]),
       ),
     );
   }
