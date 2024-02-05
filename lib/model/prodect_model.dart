@@ -4,13 +4,14 @@ class Product {
   double? price;
   String? unit;
   int? classId;
-
+    int count;
   Product({
     this.productId,
     required this.productName,
     this.price,
     this.unit,
     this.classId,
+    this.count=1
   });
 
   Map<String, dynamic> toMap() {

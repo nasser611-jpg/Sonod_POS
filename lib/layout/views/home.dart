@@ -18,26 +18,6 @@ import 'package:window_manager/window_manager.dart';
 import '../app_layout.dart';
 import 'widgets/menu_item.dart';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -183,9 +163,7 @@ class _HomeState extends State<Home> {
                       List<model.Product>? pr = state.prodcts;
                       List<FormattedProduct>? formattedProducts =
                           ProductFormatter.formatProducts(pr.cast<Product>());
-                          for (var element in formattedProducts) {
-                            print('the added${element.productName}');
-                          }
+
                       double total = 0.0;
 
                       // Iterate through the products and accumulate the total price
@@ -337,9 +315,11 @@ class _HomeState extends State<Home> {
                                 context,
                                 index,
                               ) {
-                                List<FormattedProduct> fo = [];
                                 return GestureDetector(
                                   onTap: () {
+                                    for (var element in formattedProducts) {
+                                      print('before${element.count}');
+                                    }
                                     final featchBloc = featchBlocById(context);
 
                                     if (isSelected) {
@@ -350,9 +330,8 @@ class _HomeState extends State<Home> {
                                       featchBloc.proudctSelectedId =
                                           formattedProducts[index].productId!;
 
-                                      formattedProducts.removeWhere(
-                                          (product) => product.productId == 2);
-
+                                      featchBloc.clickedItem = true;
+                                      featchBloc.index = index;
                                       featchBloc.add(FetchproudctyByIDDEvenet(
                                           proudctId: 0));
                                     }
@@ -379,7 +358,6 @@ class _HomeState extends State<Home> {
                               },
                             ),
                           ),
-
                           Container(height: 2, color: const Color(0xffE7E7E7)),
                           Container(
                             height: 350,
@@ -389,7 +367,6 @@ class _HomeState extends State<Home> {
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ////
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -422,8 +399,6 @@ class _HomeState extends State<Home> {
                                                   fontSize: 15)))
                                     ],
                                   ),
-
-                                  ///
                                   Row(
                                     children: [
                                       Expanded(
@@ -499,7 +474,7 @@ class _HomeState extends State<Home> {
                                                           BorderRadius.circular(
                                                               4),
                                                       color: Colors.white),
-                                                  child: Text('${stayedAmount}',
+                                                  child: Text('$stayedAmount',
                                                       style: const TextStyle(
                                                           color: Color(
                                                               0xffEB1E4B), // Color(0xff374957),
@@ -512,29 +487,60 @@ class _HomeState extends State<Home> {
                                       ),
                                     ],
                                   ),
-
                                   const SizedBox(height: 16),
-
                                   Keyboard(onTap: (value) {
                                     if (value == 'تصفير') {
-                                      featchBlocById(context)
-                                          .paidAmountController = 0.0;
+                                      if (featchBlocById(context).clickedItem) {
+                                        featchBlocById(context).editQuantity =
+                                            true;
+                                        bool removed = false;
+
+                                        while (!removed) {
+                                          removed = true;
+
+                                          for (int i = 0;
+                                              i < state.prodcts.length;
+                                              i++) {
+                                            Product element = state.prodcts[i];
+
+                                            if (element.productId ==
+                                                featchBlocById(context)
+                                                    .proudctSelectedId) {
+                                              // Check if there are more than one occurrences
+                                              if (state.prodcts
+                                                      .where((p) =>
+                                                          p.productId ==
+                                                          element.productId)
+                                                      .length >
+                                                  1) {
+                                                removed =
+                                                    false; // There are more than one occurrences, set removed to false
+                                                state.prodcts.remove(
+                                                    element); // Remove one occurrence
+                                                break; // Break the loop to reevaluate
+                                              }
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        featchBlocById(context)
+                                            .paidAmountController = 0.0;
+                                      }
                                     } else if (value == 'حذف') {
                                       {
-                                    for (var element in formattedProducts) {
-                                      print(element.productName);
-                                    }
-                                        print(
-                                            'the proudct id is ${featchBlocById(context).proudctSelectedId}');
-                                        formattedProducts.removeWhere(
-                                            (product) =>
-                                                product.productId ==
+                                        if (featchBlocById(context)
+                                            .clickedItem) {
+                                          state.prodcts.removeWhere(
+                                            (element) =>
+                                                element.productId ==
                                                 featchBlocById(context)
-                                                    .proudctSelectedId);
+                                                    .proudctSelectedId,
+                                          );
+                                        }
+
                                         featchBlocById(context).add(
                                             FetchproudctyByIDDEvenet(
                                                 proudctId: 0));
-                                        print('Delete clicked');
                                       }
                                     } else {
                                       double valueOffcail = double.parse(value);
@@ -552,8 +558,6 @@ class _HomeState extends State<Home> {
                                     }
 
                                     // Print the updated paidAmountController value
-                                    print(
-                                        'the value is ${featchBlocById(context).paidAmountController}');
                                     stayedAmount =
                                         featchBlocById(context).total -
                                             featchBlocById(context)

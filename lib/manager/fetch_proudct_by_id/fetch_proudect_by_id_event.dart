@@ -11,3 +11,6 @@ final int proudctId;
 }
 class FetchTotalPriceEvent extends FetchProudectByIdEvent{
 }
+class DeleteItemEvent extends FetchProudectByIdEvent{
+  
+}

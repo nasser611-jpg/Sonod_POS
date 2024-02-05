@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sonod_point_of_sell/Database/featch_catagories.dart';
-import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 import 'package:sonod_point_of_sell/model/catag_model.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
+import 'package:sonod_point_of_sell/Database/featch_catagories.dart';
 
 part 'database_event.dart';
 part 'database_state.dart';
