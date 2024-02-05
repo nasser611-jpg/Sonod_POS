@@ -20,6 +20,16 @@ import 'package:window_manager/window_manager.dart';
 import '../app_layout.dart';
 import 'widgets/menu_item.dart';
 
+
+
+
+
+
+
+
+
+
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -162,18 +172,21 @@ class _HomeState extends State<Home> {
                     BlocBuilder<FetchProudectByIdBloc, FetchProudectByIdState>(
                   builder: (context, state) {
                     if (state is ProudectsLoadedByIdState) {
+                      
                       List<model.Product>? pr = state.prodcts;
                       List<FormattedProduct>? formattedProducts =
                           ProductFormatter.formatProducts(pr.cast<Product>());
-
+                          
                       double total = 0.0;
 
                       // Iterate through the products and accumulate the total price
-                      for (var product in state.prodcts) {
-                        // Calculate the total for each product based on quantity
-                        double itemTotal = product.price as double;
-                        total += itemTotal;
-                      }
+                  for (var product in state.prodcts) {
+  // Check if product.price is not null before accessing it
+  if (product.price != null) {
+    double itemTotal = product.price!.toDouble();
+    total += itemTotal;
+  }
+}
                       featchBlocById(context).total = total;
 
                       return Column(
@@ -292,7 +305,8 @@ class _HomeState extends State<Home> {
                                       child: Text(
                                         "الوحدة",
                                         style: TextStyle(color: Colors.white),
-                                      )),
+                                      )
+                                      ),
                                   Expanded(
                                       flex: 3,
                                       child: Text(
@@ -319,7 +333,6 @@ class _HomeState extends State<Home> {
                               ) {
                                 return GestureDetector(
                                   onTap: () {
-                                 
                                     final featchBloc = featchBlocById(context);
 
                                     if (isSelected) {
@@ -329,7 +342,7 @@ class _HomeState extends State<Home> {
                                     } else {
                                       featchBloc.proudctSelectedId =
                                           formattedProducts[index].productId!;
-
+                                        featchBloc.productName=formattedProducts[index].productName;
                                       featchBloc.clickedItem = true;
                                       featchBloc.index = index;
                                       featchBloc.add(FetchproudctyByIDDEvenet(
@@ -555,6 +568,19 @@ class _HomeState extends State<Home> {
                                       // Update the paidAmountController with the new concatenated value
                                       featchBlocById(context)
                                           .paidAmountController = newValue;
+
+                                         bool repeated = false;
+ // Change this to the desired product ID
+
+for (int i = 0; i < state.prodcts.length; i++) {
+  if (state.prodcts[i].productId == featchBlocById(context).proudctSelectedId && !repeated) {
+    for (int j = 0; j < newValue; j++) {
+      state.prodcts.add(Product(productId: featchBlocById(context).proudctSelectedId,
+       productName:featchBlocById(context).productName.toString()));
+    }
+    repeated = true;
+  }
+} 
                                     }
 
                                     // Print the updated paidAmountController value

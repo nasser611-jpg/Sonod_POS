@@ -18,6 +18,8 @@ class FetchProudectByIdBloc
   int proudctSelectedId=0;
   bool clickedItem=false;
   bool editQuantity=false;
+
+  String? productName;
   FetchProudectByIdBloc() : super(FetchProudectByIdInitial()) {
 
     List<Product> products = <Product>[];
