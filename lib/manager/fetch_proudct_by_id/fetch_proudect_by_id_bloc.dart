@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
+import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 
 part 'fetch_proudect_by_id_event.dart';
 part 'fetch_proudect_by_id_state.dart';
@@ -18,7 +19,8 @@ class FetchProudectByIdBloc
   int proudctSelectedId=0;
   bool clickedItem=false;
   bool editQuantity=false;
-
+  double stayedAmount=0;
+   List <FormattedProduct>formatProducts=[];
   String? productName;
   FetchProudectByIdBloc() : super(FetchProudectByIdInitial()) {
 
@@ -44,10 +46,4 @@ class FetchProudectByIdBloc
 
 
   }
-
-
-
-
-
-
 }

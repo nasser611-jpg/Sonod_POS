@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/btn_protional_bar.dart';
 
 class OptionBar extends StatelessWidget {
+
   const OptionBar({
-    super.key,
+    super.key, 
   });
 
   @override

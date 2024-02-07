@@ -12,10 +12,12 @@ class ProductFormatter {
       // Find the corresponding product details or provide a default product
       Product product = products.firstWhere(
         (p) => p.productId == productId,
-        orElse: () => Product(productName:''), // Provide a default Product instance
+        orElse: () => Product(productName: ''),
       );
 
+
       return FormattedProduct(
+        price: product.price as double,
         productId: productId,
         productName: product.productName,
         unit: product.unit,
@@ -45,8 +47,51 @@ class ProductFormatter {
 
     return summary;
   }
-}
 
+  static Map<int?, ProductSummary> setQuantity(
+      List<Product> products, int productId, int countToAdd) {
+    bool removed = false;
+
+    while (!removed) {
+      removed = true;
+
+      for (int i = 0; i < products.length; i++) {
+        Product element = products[i];
+
+        if (element.productId == productId) {
+          // Check if there are more than one occurrences
+          if (products.where((p) => p.productId == element.productId).length >
+              1) {
+            removed =
+                false; // There are more than one occurrences, set removed to false
+            products.remove(element); // Remove one occurrence
+            break; // Break the loop to reevaluate
+          }
+        }
+      }
+    }
+
+    Map<int?, ProductSummary> summary = {};
+
+    for (Product product in products) {
+      int? currentProductId = product.productId;
+
+      if (currentProductId == productId) {
+        if (summary.containsKey(currentProductId)) {
+          summary[currentProductId]!.totalPrice +=
+              (product.price ?? 0) * countToAdd;
+          summary[currentProductId]!.count += countToAdd;
+        } else {
+          summary[currentProductId] = ProductSummary()
+            ..totalPrice = (product.price ?? 0) * countToAdd
+            ..count = countToAdd;
+        }
+      }
+    }
+
+    return summary;
+  }
+}
 
 class FormattedProduct {
   int? productId;
@@ -54,13 +99,14 @@ class FormattedProduct {
   String? unit;
   double totalPrice;
   int count;
-
+double price;
   FormattedProduct({
     this.productId,
     this.productName,
     this.unit,
     required this.totalPrice,
     required this.count,
+    required this.price
   });
 }
 

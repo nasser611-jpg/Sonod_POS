@@ -24,7 +24,10 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  
+    TextEditingController quanti = TextEditingController(text: '$quantity');
+
+    int quantityValue = int.parse(quanti.text);
+    featchBlocById(context).countProudct = quantityValue;
     return Container(
         width: double.infinity,
         height: 38,
@@ -79,13 +82,22 @@ class CartItem extends StatelessWidget {
                 )),
             Expanded(
                 flex: 2,
-                child: Text('$quantity',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        color: isSelected
-                            ? const Color(0xff2D969B)
-                            : const Color(0xff5E5E5E),
-                        fontWeight: FontWeight.bold)))
+                child:
+                TextField(
+                  controller: quanti,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: isSelected
+                        ? const Color(0xff2D969B)
+                        : const Color(0xff5E5E5E),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none, 
+                  ),
+                )
+                
+                )
           ]),
         ));
   }

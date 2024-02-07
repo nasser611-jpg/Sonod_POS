@@ -1,8 +1,15 @@
 import 'dart:io';
-
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+
+
+
+
+
+
+
 
 class DbHelper {
   static final DbHelper _instance = DbHelper.internal();
@@ -42,7 +49,7 @@ class DbHelper {
         print('Initial database created and backed up successfully!');
       }
 
-      final db = await openDatabase(path, version: 1, onUpgrade: onUpgrade);
+      final db = await openDatabase(path, version:5, onUpgrade: onUpgrade);
       return db;
     } catch (e) {
       print('Error creating database: $e');
@@ -70,23 +77,35 @@ class DbHelper {
         );
       ''');
 
-      db.execute('''
-        CREATE TABLE bill (
-          bill_number INTEGER PRIMARY KEY AUTOINCREMENT,
-          bill_type TEXT,
-          class_id INTEGER,
-          product_id INTEGER,
-          quantity INTEGER,
-          price REAL,
-          unit TEXT,
-          bill_amount REAL,
-          paid_amount REAL,
-          stayed_amount REAL,
-          bill_time TEXT,
-          FOREIGN KEY (class_id) REFERENCES class(class_id),
-          FOREIGN KEY (product_id) REFERENCES products(product_id)
-        );
-      ''');
+        db.execute('''
+      CREATE TABLE bills (
+        bill_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bill_date TEXT,
+        paid_amount REAL,
+        stayed_amount REAL,
+        total REAL,
+        bill_type TEXT 
+      )
+    ''');
+
+     db.execute('''
+      CREATE TABLE bill_products (
+        bill_products_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bill_id INTEGER REFERENCES bills(bill_id),
+        product_id INTEGER REFERENCES products_bill(product_id)
+      )
+    ''');
+
+     db.execute('''
+      CREATE TABLE products_bill (
+        product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_name TEXT,
+        class TEXT,
+        price REAL,
+        unit TEXT,
+        quantity INTEGER
+      )
+    ''');
 
       print('OnCreate--------------');
     } catch (e) {
