@@ -65,7 +65,7 @@ class BillProduct {
 class ProductBill {
   int? productId;
   String? productName;
-  String? productClass; // Changed from classs
+  String? classs; // Changed from classss
   double? price;
   String? unit;
   int? quantity;
@@ -73,7 +73,7 @@ class ProductBill {
   ProductBill({
     this.productId,
     this.productName,
-    this.productClass,
+    this.classs,
     this.price,
     this.unit,
     this.quantity,
@@ -81,9 +81,9 @@ class ProductBill {
 
   Map<String, dynamic> toMap() {
     return {
-      'productId': productId,
-      'productName': productName,
-      'productClass': productClass, // Changed from classs
+      'product_id': productId,
+      'product_name': productName,
+      'classs': classs, // Changed from classss
       'price': price,
       'unit': unit,
       'quantity': quantity,
@@ -91,9 +91,9 @@ class ProductBill {
   }
 
   ProductBill.fromMap(Map<String, dynamic> map) {
-    productId = map['productId'];
-    productName = map['productName'];
-    productClass = map['productClass']; // Changed from classs
+    productId = map['product_id'];
+    productName = map['product_name'];
+    classs = map['classs']; // Changed from classss
     price = map['price'];
     unit = map['unit'];
     quantity = map['quantity'];

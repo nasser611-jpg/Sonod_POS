@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sonod_point_of_sell/core/util/time.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
+import 'package:sonod_point_of_sell/core/util/format_number.dart';
 import 'package:sonod_point_of_sell/manager/bill_bloc/bill_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/menu_item.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+
+
 
 
 
@@ -57,7 +60,7 @@ class _BillHeaderState extends State<BillHeader> {
                       text: "عدد الطلبات : ${state.lastRequst} "),
                    StatsItem(
                       icon: 'assets/icons/last_invoice.svg',
-                      text: " اخر فاتورة : ${state.lastDate}"),
+                      text: " اخر فاتورة :${formatDateString(state.lastDate)}"),
                 ],
               );
             }

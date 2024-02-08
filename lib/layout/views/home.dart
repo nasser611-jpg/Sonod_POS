@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
+import 'package:sonod_point_of_sell/core/util/format_number.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
-import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
-import 'package:sonod_point_of_sell/layout/views/widgets/keyboard.dart';
-import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
-import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/bill_header.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/bill_number.dart';
-import 'package:sonod_point_of_sell/layout/views/widgets/page_header.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/keyboard.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/optional_bar.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/page_header.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/proudcts_items_widget.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -80,8 +81,10 @@ class _HomeState extends State<Home> {
                           total += itemTotal;
                         }
                       }
-                      featchBlocById(context).total = total;
 
+                      featchBlocById(context).total = total;
+                      featchBlocById(context).formatProducts =
+                          formattedProducts;
                       return Column(
                         children: [
                           Container(
@@ -107,7 +110,7 @@ class _HomeState extends State<Home> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                   const BillNumber(),
+                                  const BillNumber(),
                                   Expanded(
                                       flex: 1,
                                       child: Padding(
@@ -263,8 +266,7 @@ class _HomeState extends State<Home> {
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                               color: Colors.white),
-                                          child: Text(
-                                              "${featchBlocById(context).total}",
+                                          child: Text(formatWithCommas(total),
                                               style: const TextStyle(
                                                   color: Color(0xff374957),
                                                   fontWeight: FontWeight.bold,
@@ -304,7 +306,9 @@ class _HomeState extends State<Home> {
                                                             4),
                                                     color: Colors.white),
                                                 child: Text(
-                                                  '${featchBlocById(context).paidAmountController}',
+                                                  formatWithCommas(
+                                                      featchBlocById(context)
+                                                          .paidAmountController),
                                                   style: const TextStyle(
                                                       color: Color(0xff374957),
                                                       fontWeight:
@@ -346,7 +350,9 @@ class _HomeState extends State<Home> {
                                                           BorderRadius.circular(
                                                               4),
                                                       color: Colors.white),
-                                                  child: Text('$stayedAmount',
+                                                  child: Text(
+                                                      formatWithCommas(
+                                                          stayedAmount),
                                                       style: const TextStyle(
                                                           color: Color(
                                                               0xffEB1E4B), // Color(0xff374957),
@@ -426,14 +432,12 @@ class _HomeState extends State<Home> {
                                       featchBlocById(context)
                                           .paidAmountController = newValue;
                                     }
-
                                     stayedAmount =
                                         featchBlocById(context).total -
                                             featchBlocById(context)
                                                 .paidAmountController;
                                     featchBlocById(context).stayedAmount =
                                         stayedAmount;
-
                                     featchBlocById(context).add(
                                         FetchproudctyByIDDEvenet(proudctId: 0));
                                   })
@@ -443,7 +447,7 @@ class _HomeState extends State<Home> {
                       );
                     } else {
                       return const Center(
-                        child: Text('there  is no state'),
+                        child: Text('there Is No Item Added Yet'),
                       );
                     }
                   },

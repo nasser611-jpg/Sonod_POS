@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
+import 'package:sonod_point_of_sell/core/util/format_number.dart';
 
 // ignore: must_be_immutable
 class CartItem extends StatelessWidget {
@@ -73,7 +74,7 @@ class CartItem extends StatelessWidget {
             Expanded(
                 flex: 2,
                 child: Text(
-                  price.toString(),
+                 formatWithCommas(price),
                   style: TextStyle(
                       color: featchBlocById(context).isSelected
                           ? const Color(0xff2D969B)
@@ -82,22 +83,15 @@ class CartItem extends StatelessWidget {
                 )),
             Expanded(
                 flex: 2,
-                child:
-                TextField(
-                  controller: quanti,
-                  textAlign: TextAlign.left,
+                child: Text(
+                  '$quantity',textAlign: TextAlign.center,
                   style: TextStyle(
                     color: isSelected
                         ? const Color(0xff2D969B)
                         : const Color(0xff5E5E5E),
                     fontWeight: FontWeight.bold,
                   ),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none, 
-                  ),
-                )
-                
-                )
+                ))
           ]),
         ));
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
+import 'package:sonod_point_of_sell/core/util/format_number.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
 
 class ProductItem extends StatefulWidget {
@@ -84,7 +85,7 @@ class _ProductItemState extends State<ProductItem> {
                   ),
                   child: Center(
                       child: Text(
-                    widget.price.toString(),
+                    formatWithCommas(widget.price),
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

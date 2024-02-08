@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sonod_point_of_sell/Database/store_bill.dart';
-import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/Database/fech_last_bill.dart';
+import 'package:sonod_point_of_sell/Database/init_database.dart';
+import 'package:sonod_point_of_sell/Database/store_bill.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 
 part 'bill_event.dart';
@@ -15,12 +15,13 @@ class BillBloc extends Bloc<BillEvent, BillState> {
         await insertBill(
             billDate: event.billDate,
             formattedProduct: event.formattedProduct,
-            paid_amount: event.paidAmount,
-            stayed_amount: event.stayedAmount,
+            paidAmount: event.paidAmount,
+            stayedAmount: event.stayedAmount,
             total: event.total);
       } 
       
       else if (event is FechBillHeaderEvent) {
+        try{
           DbHelper dbO = DbHelper();
          await dbO.createDatabase();
   
@@ -30,7 +31,9 @@ class BillBloc extends Bloc<BillEvent, BillState> {
         final String lastDate = await  lastBillDate();
         emit(FechBillHeaderState( lastRequst: lastId,lastDate: lastDate));
       
-      }
+      }catch(e){
+        print('Error in Fech Bill Header $e');
+      }}
     });
   }
 }

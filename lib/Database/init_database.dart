@@ -100,7 +100,7 @@ class DbHelper {
       CREATE TABLE products_bill (
         product_id INTEGER PRIMARY KEY AUTOINCREMENT,
         product_name TEXT,
-        class TEXT,
+        classs TEXT,
         price REAL,
         unit TEXT,
         quantity INTEGER
