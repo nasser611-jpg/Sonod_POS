@@ -13,7 +13,7 @@ class ProductItem extends StatefulWidget {
   final double price;
   final int productId;
   final bool isFavorate;
-  ProductItem({
+  const ProductItem({
     Key? key,
     required this.productName,
     required this.price,
@@ -26,12 +26,12 @@ class ProductItem extends StatefulWidget {
 }
 
 class _ProductItemState extends State<ProductItem> {
-  late Future<int> _isFavoriteFuture;
+  late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
-    _isFavoriteFuture = isFavorite();
+    _isFavorite = widget.isFavorate;
   }
 
   Future<int> isFavorite() async {
@@ -41,10 +41,10 @@ class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
-      future: _isFavoriteFuture,
+      future: isFavorite(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Or any loading indicator
+          return const CircularProgressIndicator(); // Or any loading indicator
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -55,13 +55,22 @@ class _ProductItemState extends State<ProductItem> {
               );
             },
             onLongPress: () {
-              BlocProvider.of<UiBloc>(context).add(
-                AddFavoriteProductEvent(
-                  productID: widget.productId,
-                  isFavroite: 1,
-                ),
-              );
-              showMessage(context, 'تم الاضافة لمفضلتي');
+              setState(() {
+                _isFavorite = !_isFavorite;
+
+                BlocProvider.of<UiBloc>(context).add(
+                  AddFavoriteProductEvent(
+                    productID: widget.productId,
+                    isFavroite: _isFavorite ? 1 : 0,
+                  ),
+                );
+
+                showMessage(
+                    context,
+                    _isFavorite
+                        ? 'تم الاضافة لمفضلتي'
+                        : 'تم  الازاله من المفضله!');
+              });
             },
             child: Container(
               margin: const EdgeInsets.all(8),
@@ -84,7 +93,7 @@ class _ProductItemState extends State<ProductItem> {
                   builder: (context, state) {
                     return Stack(
                       children: [
-                        widget.isFavorate
+                       snapshot.data==1
                             ? Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: SvgPicture.asset(

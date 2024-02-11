@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 import 'package:sonod_point_of_sell/Database/store_bill.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 
 part 'ui_event.dart';
 part 'ui_state.dart';
@@ -22,9 +22,7 @@ class UiBloc extends Bloc<UiEvent, UiState> {
         await addFavoriteProduc(event.isFavroite, event.productID);
       } else if (event is FetchFavoriteProductsEvent) {
         final List<Product> products = await getFavoriteProducts();
-        for (var element in products) {
-          print(element.productName);
-        }
+       
         emit(FeachFavroiteState(products: products));
       }
     });

@@ -1,8 +1,8 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/show_message.dart';
+import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/manager/bill_bloc/bill_bloc.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
 
@@ -24,7 +24,7 @@ class BtnOptionBar extends StatelessWidget {
     BillBloc bloc = BlocProvider.of(context);
     return InkWell(
       onTap: () {
-        if (child == 'حفظ الفاتورة') {
+        if (child == 'حفظ الفاتورة'&&fechbloc.formatProducts.isNotEmpty) {
           bloc.add(InsertBillEvent(
               formattedProduct: fechbloc.formatProducts,
               paidAmount: fechbloc.paidAmountController,

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
-import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/product_item.dart';
 import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
-// ignore: must_be_immutable
 class ProudctsItems extends StatelessWidget {
   ProudctsItems({Key? key}) : super(key: key);
   ScrollController? controller = ScrollController();
@@ -27,6 +26,7 @@ class ProudctsItems extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               sliver: BlocBuilder<UiBloc, UiState>(
                 builder: (context, state) {
+                  print('state $state');
                   if (state is ProudectsLoadedState) {
                     List<Product> products = state.prodcts;
                     return SliverGrid(
