@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/format_number.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
+import 'package:sonod_point_of_sell/core/util/keyboard_opertion.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/bill_header.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/bill_number.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
@@ -198,6 +199,7 @@ class _HomeState extends State<Home> {
 
                                     if (isSelected) {
                                       featchBloc.proudctSelectedId = 0;
+                                      featchBloc.clickedItem = false;
                                       featchBloc.add(FetchproudctyByIDDEvenet(
                                           proudctId: 0));
                                     } else {
@@ -218,8 +220,8 @@ class _HomeState extends State<Home> {
                                             .proudctSelectedId ==
                                         formattedProducts[index].productId,
                                     quantity: formattedProducts[index].count,
-                                    proudctId: formattedProducts[index]
-                                        .productId as int,
+                                    proudctId:
+                                        formattedProducts[index].productId ?? 1,
                                     count: index,
                                     proudctName: formattedProducts[index]
                                         .productName
@@ -367,89 +369,46 @@ class _HomeState extends State<Home> {
                                   ),
                                   const SizedBox(height: 16),
                                   Keyboard(onTap: (value) {
+                                    
                                     if (value == 'تصفير') {
-                                      if (featchBlocById(context).clickedItem) {
-                                        featchBlocById(context).editQuantity =
-                                            true;
-                                        bool removed = false;
-
-                                        while (!removed) {
-                                          removed = true;
-
-                                          for (int i = 0;
-                                              i < state.prodcts.length;
-                                              i++) {
-                                            Product element = state.prodcts[i];
-
-                                            if (element.productId ==
-                                                featchBlocById(context)
-                                                    .proudctSelectedId) {
-                                              // Check if there are more than one occurrences
-                                              if (state.prodcts
-                                                      .where((p) =>
-                                                          p.productId ==
-                                                          element.productId)
-                                                      .length >
-                                                  1) {
-                                                removed =
-                                                    false; // There are more than one occurrences, set removed to false
-                                                state.prodcts.remove(
-                                                    element); // Remove one occurrence
-                                                break; // Break the loop to reevaluate
-                                              }
-                                            }
-                                          }
-                                        }
-                                      } else {
-                                        featchBlocById(context)
-                                            .paidAmountController = 0.0;
-                                      }
+                                      keyboardOperions.onTapClear(
+                                          context, state.prodcts);
                                     } else if (value == 'حذف') {
-                                      {
-                                        if (featchBlocById(context)
-                                            .clickedItem) {
-                                          state.prodcts.removeWhere(
-                                            (element) =>
-                                                element.productId ==
-                                                featchBlocById(context)
-                                                    .proudctSelectedId,
-                                          );
-                                        }
-
-                                        featchBlocById(context).add(
-                                            FetchproudctyByIDDEvenet(
-                                                proudctId: 0));
-                                      }
+                                      keyboardOperions.onTapDelete(
+                                          context, state.prodcts);
                                     } else {
-                                      double valueOffcail = double.parse(value);
-                                      double currentAmount =
-                                          featchBlocById(context)
-                                              .paidAmountController;
+                                      keyboardOperions.onTapNumber(
+                                          context,
+                                          state.prodcts,
+                                          value,
+                                          
+                                          formattedProducts);
+                                      if (featchBlocById(context).clickedItem ==
+                                        false) {
+                                      stayedAmount =
+                                          featchBlocById(context).total -
+                                              featchBlocById(context)
+                                                  .paidAmountController;
+                                      featchBlocById(context).stayedAmount =
+                                          stayedAmount;
 
-                                      double newValue =
-                                          currentAmount * 10 + valueOffcail;
-
-                                      featchBlocById(context)
-                                          .paidAmountController = newValue;
+                                      featchBlocById(context).add(
+                                          FetchproudctyByIDDEvenet(
+                                              proudctId: 0));
                                     }
-                                    stayedAmount =
-                                        featchBlocById(context).total -
-                                            featchBlocById(context)
-                                                .paidAmountController;
-                                    featchBlocById(context).stayedAmount =
-                                        stayedAmount;
-                                    featchBlocById(context).add(
-                                        FetchproudctyByIDDEvenet(proudctId: 0));
+                                    }
+                                   
                                   })
                                 ]),
                           )
                         ],
                       );
-                    } else {
-                      return const Center(
-                        child: Text('there Is No Item Added Yet'),
-                      );
+                    } else if (state is CancelBillState) {
+                      featchBlocById(context)
+                          .formatProducts
+                          .remove(featchBlocById(context).formatProducts);
                     }
+                    return Text('ther is no state');
                   },
                 ),
               )

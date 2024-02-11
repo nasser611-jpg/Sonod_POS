@@ -11,8 +11,6 @@ import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_b
 
 
 
-
-
 class BillHeader extends StatefulWidget {
   const BillHeader({Key? key}) : super(key: key);
 
@@ -58,7 +56,7 @@ class _BillHeaderState extends State<BillHeader> {
                   StatsItem(
                       icon: 'assets/icons/orders.svg',
                       text: "عدد الطلبات : ${state.lastRequst} "),
-                   StatsItem(
+                  StatsItem(
                       icon: 'assets/icons/last_invoice.svg',
                       text: " اخر فاتورة :${formatDateString(state.lastDate)}"),
                 ],

@@ -1,16 +1,16 @@
 part of 'fetch_proudect_by_id_bloc.dart';
 
 @immutable
-abstract class FetchProudectByIdEvent  {}
+abstract class FetchProudectByIdEvent {}
 
-
-class FetchproudctyByIDDEvenet extends FetchProudectByIdEvent{
-final int proudctId;
+class FetchproudctyByIDDEvenet extends FetchProudectByIdEvent {
+  final int proudctId;
 
   FetchproudctyByIDDEvenet({required this.proudctId});
 }
-class FetchTotalPriceEvent extends FetchProudectByIdEvent{
-}
-class DeleteItemEvent extends FetchProudectByIdEvent{
-  
-}
+
+class FetchTotalPriceEvent extends FetchProudectByIdEvent {}
+
+class DeleteItemEvent extends FetchProudectByIdEvent {}
+
+class CancelBillEvent extends FetchProudectByIdEvent {}

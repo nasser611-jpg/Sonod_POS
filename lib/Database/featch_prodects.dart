@@ -1,5 +1,6 @@
 import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 Future<List<Product>> getProductsByClassId(int classId) async {
   DbHelper dbH = DbHelper();
@@ -49,4 +50,22 @@ Future<List<Product>> getProductsByProductId(int productId) async {
     print('Error getting products: $e');
     rethrow;
   }
+}
+
+Future<List<Product>> getFavoriteProducts() async {
+  DbHelper dbH = DbHelper();
+  Database db = await dbH.createDatabase();
+  List<Map<String, dynamic>> favoriteProducts = await db.rawQuery('''
+    SELECT * FROM products WHERE isFavorite = 1
+  ''');
+
+  return favoriteProducts.map((map) {
+    return Product(
+      productId: map['product_id'],
+      productName: map['product_name'],
+      price: map['price'],
+      unit: map['unit'],
+      classId: map['class_id'],
+    );
+  }).toList();
 }

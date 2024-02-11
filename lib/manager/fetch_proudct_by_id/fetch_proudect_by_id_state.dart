@@ -17,4 +17,4 @@ final class LoadingFetchProductById extends FetchProudectByIdState {}
 
 final class FetchTotalPriceState extends FetchProudectByIdState {}
 
-class RefreshDeletionOp extends FetchProudectByIdState {}
+class CancelBillState extends FetchProudectByIdState {}

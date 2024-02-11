@@ -19,10 +19,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         } catch (e) {
           emit(ProductsError('Failed to fetch products: $e'));
         }
-      } 
-       else if (event is FeatchCalssesEvent) {
+      } else if (event is FeatchCalssesEvent) {
         try {
-       
           final List<Class> classs = await getAllClasses();
           emit(ClassesLoadedState(classes: classs));
         } catch (e) {
@@ -32,7 +30,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     });
   }
 
- 
   // @override
   // void onTransition(Transition<ProductsEvent, ProductsState> transition) {
   //   super.onTransition(transition);

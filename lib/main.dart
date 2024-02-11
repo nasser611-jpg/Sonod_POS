@@ -10,6 +10,7 @@ import 'package:sonod_point_of_sell/manager/bill_bloc/bill_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+
 void main() async {
   //  Bloc.observer = MyBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,23 +44,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [     BlocProvider<ProductsBloc>(
+      providers: [
+        BlocProvider<ProductsBloc>(
           create: (context) => ProductsBloc(),
         ),
         BlocProvider<UiBloc>(
           create: (context) => UiBloc(),
         ),
-          BlocProvider<FetchProudectByIdBloc>(
-          create: (context) =>FetchProudectByIdBloc(),
-          
+        BlocProvider<FetchProudectByIdBloc>(
+          create: (context) => FetchProudectByIdBloc(),
         ),
-             BlocProvider<BillBloc>(
-          create: (context) =>BillBloc(),
-          
+        BlocProvider<BillBloc>(
+          create: (context) => BillBloc(),
         ),
-        
-   
-   
       ],
       child: MaterialApp(
         title: 'POS',

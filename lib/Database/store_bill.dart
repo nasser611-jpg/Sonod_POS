@@ -1,8 +1,6 @@
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sonod_point_of_sell/Database/init_database.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-
 
 Future<void> insertBill({
   required List<FormattedProduct> formattedProduct,
@@ -17,7 +15,7 @@ Future<void> insertBill({
 
     if (formattedProduct.isNotEmpty) {
       // If formattedProduct list is not empty, print its elements
-     print('the Formatted List is Empty Mr Nasser');
+      print('the Formatted List is Empty Mr Nasser');
     } else {
       // If formattedProduct list is empty, print a message
       print('No products to insert.');
@@ -39,7 +37,12 @@ Future<void> insertBill({
           int? productId = await db.rawInsert('''
             INSERT INTO products_bill (product_name, price, unit, quantity)
             VALUES (?, ?, ?, ?)
-          ''', [formattedProduct.productName, formattedProduct.price, formattedProduct.unit, formattedProduct.count]);
+          ''', [
+            formattedProduct.productName,
+            formattedProduct.price,
+            formattedProduct.unit,
+            formattedProduct.count
+          ]);
 
           if (productId != -1) {
             // Inserting entry into the bill_products table to establish relationship
@@ -66,3 +69,55 @@ Future<void> insertBill({
   }
 }
 
+Future<int> addFavoriteProduc(int isFavorite, int productId) async {
+  try {
+    DbHelper dbH = DbHelper();
+    Database db = await dbH.createDatabase();
+
+    // Updating data in the products table where product_id matches the provided productId
+    await db.rawUpdate('''
+      UPDATE products 
+      SET isFavorite = ?
+      WHERE product_id = ?
+    ''', [isFavorite, productId]);
+
+    // Returning a value indicating success (1)
+    return 1;
+  } catch (e) {
+    print("Error updating data: $e");
+    return 0; // Handle error accordingly
+  }
+}
+
+Future<int> getIsFavorite(int productId) async {
+  try {
+    DbHelper dbH = DbHelper();
+    Database db = await dbH.createDatabase();
+
+    // Querying the products table to retrieve isFavorite where product_id matches the provided productId
+    List<Map<String, dynamic>> result = await db.query(
+      'products',
+      columns: ['isFavorite'],
+      where: 'product_id = ?',
+      whereArgs: [productId],
+    );
+
+    // Extracting and returning the isFavorite value
+    if (result.isNotEmpty) {
+      dynamic isFavoriteValue = result.first['isFavorite'];
+      // Check if the value is not null before attempting to cast it to int
+      if (isFavoriteValue != null) {
+        return isFavoriteValue as int; // Return the value if it's not null
+      } else {
+        // Return a default value indicating the value is null
+        return 0;
+      }
+    } else {
+      // Return a default value indicating not found (you may handle this differently based on your needs)
+      return 0;
+    }
+  } catch (e) {
+    print("Error retrieving data: $e");
+    return 9; // Handle error accordingly
+  }
+}

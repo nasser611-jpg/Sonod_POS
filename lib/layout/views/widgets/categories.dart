@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/favorite_widget.dart';
 import 'package:sonod_point_of_sell/manager/catagories_bloc/database_bloc.dart';
 import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
 import 'package:sonod_point_of_sell/model/catag_model.dart';
@@ -16,6 +16,7 @@ class Categories extends StatefulWidget {
 
 class _CategoriesState extends State<Categories> {
   int activeIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<ProductsBloc>(context).add(FeatchCalssesEvent());
@@ -88,42 +89,14 @@ class _CategoriesState extends State<Categories> {
                     ),
                   ),
                 );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
               }
+
+              return const Center(
+                child: Text('there is no state'),
+              );
             },
           ),
-          Container(
-            width: 104,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: ShapeDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment(-1.00, -0.01),
-                end: Alignment(1, 0.01),
-                colors: [Color(0xFFFFEAB5), Colors.white],
-              ),
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0xFFE97B00)),
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            child: Center(
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset("assets/icons/star.svg"),
-                  ),
-                  const Text(
-                    "المفضلة",
-                    style: TextStyle(color: Color(0xffE97B00)),
-                  ),
-                ],
-              ),
-            ),
-          )
+          const FilterdProducts()
         ],
       ),
     );

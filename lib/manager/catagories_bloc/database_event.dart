@@ -1,7 +1,6 @@
 part of 'database_bloc.dart';
 
 @immutable
-
 abstract class ProductsEvent {}
 
 class FetchProducts extends ProductsEvent {
@@ -9,4 +8,7 @@ class FetchProducts extends ProductsEvent {
 
   FetchProducts(this.classId);
 }
-class FeatchCalssesEvent extends ProductsEvent{}
+
+class FeatchCalssesEvent extends ProductsEvent {}
+
+class FetchFavoriteProductsEvent extends ProductsEvent {}

@@ -15,9 +15,8 @@ class ProductFormatter {
         orElse: () => Product(productName: ''),
       );
 
-
       return FormattedProduct(
-        price: product.price as double,
+        price: product.price ?? 0.0,
         productId: productId,
         productName: product.productName,
         unit: product.unit,
@@ -99,15 +98,14 @@ class FormattedProduct {
   String? unit;
   double totalPrice;
   int count;
-double price;
-  FormattedProduct({
-    this.productId,
-    this.productName,
-    this.unit,
-    required this.totalPrice,
-    required this.count,
-    required this.price
-  });
+  double price;
+  FormattedProduct(
+      {this.productId,
+      this.productName,
+      this.unit,
+      required this.totalPrice,
+      required this.count,
+      required this.price});
 }
 
 class ProductSummary {
