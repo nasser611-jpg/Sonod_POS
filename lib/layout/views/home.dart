@@ -354,7 +354,7 @@ class _HomeState extends State<Home> {
                                                       color: Colors.white),
                                                   child: Text(
                                                       formatWithCommas(
-                                                          stayedAmount),
+                                                          featchBlocById(context).stayedAmount),
                                                       style: const TextStyle(
                                                           color: Color(
                                                               0xffEB1E4B), // Color(0xff374957),
@@ -369,7 +369,6 @@ class _HomeState extends State<Home> {
                                   ),
                                   const SizedBox(height: 16),
                                   Keyboard(onTap: (value) {
-                                    
                                     if (value == 'تصفير') {
                                       keyboardOperions.onTapClear(
                                           context, state.prodcts);
@@ -381,34 +380,23 @@ class _HomeState extends State<Home> {
                                           context,
                                           state.prodcts,
                                           value,
-                                          
                                           formattedProducts);
                                       if (featchBlocById(context).clickedItem ==
-                                        false) {
-                                      stayedAmount =
-                                          featchBlocById(context).total -
-                                              featchBlocById(context)
-                                                  .paidAmountController;
-                                      featchBlocById(context).stayedAmount =
-                                          stayedAmount;
-
-                                      featchBlocById(context).add(
-                                          FetchproudctyByIDDEvenet(
-                                              proudctId: 0));
+                                          false) {
+                                      keyboardOperions. updateStayedAmount(context); 
                                     }
-                                    }
-                                   
-                                  })
-                                ]),
+                                  }
+                    })]),
                           )
                         ],
                       );
                     } else if (state is CancelBillState) {
                       featchBlocById(context)
                           .formatProducts
+                          // ignore: list_remove_unrelated_type
                           .remove(featchBlocById(context).formatProducts);
                     }
-                    return Text('ther is no state');
+                    return const Center(child: CircularProgressIndicator.adaptive(),);
                   },
                 ),
               )
@@ -419,3 +407,5 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+

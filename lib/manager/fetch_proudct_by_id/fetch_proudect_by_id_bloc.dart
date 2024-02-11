@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:sonod_point_of_sell/Database/featch_prodects.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
 part 'fetch_proudect_by_id_event.dart';
 part 'fetch_proudect_by_id_state.dart';
@@ -38,7 +38,7 @@ class FetchProudectByIdBloc
       } else if (event is FetchTotalPriceEvent) {
         emit(FetchTotalPriceState());
       } else if (event is CancelBillEvent) {
-        products.clear();
+      products.clear();
        emit(ProudectsLoadedByIdState(prodcts: products));
       }
     });

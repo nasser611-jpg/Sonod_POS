@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
 class keyboardOperions{
   
@@ -59,7 +59,7 @@ static void onTapNumber(BuildContext context, List<Product> products, String val
     // Update the UI to display the concatenated value
    featchBlocById(context).quantityEdited= newValue.toDouble();
 
-    if (featchBlocById(context).proudctSelectedId == formattedProducts[featchBlocById(context).index].productId) {
+    if (featchBlocById(context).proudctSelectedId == formattedProducts![featchBlocById(context).index].productId) {
       bool removed = false;
      
       while (!removed) {
@@ -105,6 +105,7 @@ static void onTapNumber(BuildContext context, List<Product> products, String val
   double currentAmount = featchBlocById(context).paidAmountController;
   int newValue = (currentAmount * 10 + int.parse(value)).toInt();
   featchBlocById(context).paidAmountController= newValue.toDouble();
+  
      featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: 0));
   }
 
@@ -117,6 +118,14 @@ static  void updateState(BuildContext context, List<Product> products) {
   featchBlocById(context).stayedAmount = stayedAmount;
 
   featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: 0));
+}
+
+static  void updateStayedAmount(BuildContext context) {
+  if (!featchBlocById(context).clickedItem) {
+    double stayedAmount = featchBlocById(context).total - featchBlocById(context).paidAmountController;
+    featchBlocById(context).stayedAmount = stayedAmount;
+    featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: 0));
+  }
 }
 
 }
