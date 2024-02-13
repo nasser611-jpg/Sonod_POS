@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sonod_point_of_sell/core/util/trans_pdf.dart';
 import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/format_number.dart';
@@ -198,7 +199,8 @@ class _HomeState extends State<Home> {
                                     final featchBloc = featchBlocById(context);
 
                                     if (isSelected) {
-                                      featchBlocById(context).quantityEdited=0;
+                                      featchBlocById(context).quantityEdited =
+                                          0;
                                       featchBloc.proudctSelectedId = 0;
                                       featchBloc.clickedItem = false;
                                       featchBloc.add(FetchproudctyByIDDEvenet(
@@ -355,7 +357,9 @@ class _HomeState extends State<Home> {
                                                       color: Colors.white),
                                                   child: Text(
                                                       formatWithCommas(
-                                                          featchBlocById(context).stayedAmount),
+                                                          featchBlocById(
+                                                                  context)
+                                                              .stayedAmount),
                                                       style: const TextStyle(
                                                           color: Color(
                                                               0xffEB1E4B), // Color(0xff374957),
@@ -384,10 +388,12 @@ class _HomeState extends State<Home> {
                                           formattedProducts);
                                       if (featchBlocById(context).clickedItem ==
                                           false) {
-                                      keyboardOperions. updateStayedAmount(context); 
+                                        keyboardOperions
+                                            .updateStayedAmount(context);
+                                      }
                                     }
-                                  }
-                    })]),
+                                  })
+                                ]),
                           )
                         ],
                       );
@@ -397,16 +403,19 @@ class _HomeState extends State<Home> {
                           // ignore: list_remove_unrelated_type
                           .remove(featchBlocById(context).formatProducts);
                     }
-                    return const Center(child: CircularProgressIndicator.adaptive(),);
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
                   },
                 ),
               )
             ],
           )),
+         TextButton(onPressed: () {
+           Navigator.push(context, MaterialPageRoute(builder: (context) => PdfFourColumnExample() ,));
+         }, child: Text('PDF'))
         ],
       ),
     );
   }
 }
-
-

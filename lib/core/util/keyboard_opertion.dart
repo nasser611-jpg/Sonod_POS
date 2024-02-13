@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
+// ignore_for_file: camel_case_types
+
 
 class keyboardOperions {
   static void onTapClear(BuildContext context, List<Product> products) {
@@ -87,6 +89,7 @@ class keyboardOperions {
         int index = featchBlocById(context).index;
 
         try {
+     
           while (count < newValue - 1) {
             // Use newValue directly here
             products.add(Product(
@@ -111,7 +114,7 @@ class keyboardOperions {
 
       featchBlocById(context).add(FetchproudctyByIDDEvenet(proudctId: 0));
     }
-
+   
     updateState(context, products);
   }
 

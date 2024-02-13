@@ -45,6 +45,8 @@ dependencies:
   bloc: ^8.1.2
   sqflite_common_ffi: ^2.3.2
   intl: ^0.18.1
+  pdf: ^3.10.7
+  open_file: ^3.3.2
 
 
 dev_dependencies:
@@ -71,6 +73,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/fonts/
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
