@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:pdf/pdf.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
+import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 
 
 
@@ -28,8 +28,18 @@ import 'package:pdf/widgets.dart' as pw;
 
 
 
+
+
+
+
+// ignore: use_key_in_widget_constructors
 class PdfFourColumnExample extends StatefulWidget {
+final List<FormattedProduct>formattedproudct;
+final double paidAmount;
+final double stayedAmount;
+final double totalAmount;
 
+  const PdfFourColumnExample({super.key, required this.formattedproudct, required this.paidAmount, required this.stayedAmount, required this.totalAmount});
   @override
   State<PdfFourColumnExample> createState() => _PdfFourColumnExampleState();
 }
@@ -54,7 +64,7 @@ final Uint8List fontData = File('assets/fonts/Cairo-Bold.ttf').readAsBytesSync()
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PDF Four Column Example'),
+        title: const Text('PDF Four Column Example'),
       ),
       body: Center(
         child: ElevatedButton(
@@ -86,7 +96,7 @@ final Uint8List fontData = File('assets/fonts/Cairo-Bold.ttf').readAsBytesSync()
             // Open PDF
             OpenFile.open(file.path);
           },
-          child: Text('Generate PDF'),
+          child: const Text('Generate PDF'),
         ),
       ),
     );
@@ -96,11 +106,11 @@ final Uint8List fontData = File('assets/fonts/Cairo-Bold.ttf').readAsBytesSync()
   {
 
     return pw.Container(
-      margin: pw.EdgeInsets.only(bottom: 20),
+      margin: const pw.EdgeInsets.only(bottom: 20),
       child: pw.Column(
         children: [
           pw.SizedBox(height: 10),
-          pw.SvgImage(svg:  File('assets/albaik.svg').readAsStringSync() , width: 80 ) , // Add image widget here
+          pw.SvgImage(svg:  File('assets/albaik.svg').readAsStringSync() , width: 80 ) ,// Add image widget here
           pw.SizedBox(height: 10),
           pw.Text('Date and Time: ${DateTime.now()}'),
           pw.Divider(),
@@ -110,13 +120,15 @@ final Uint8List fontData = File('assets/fonts/Cairo-Bold.ttf').readAsBytesSync()
   }
 
   pw.Widget _buildTable() {
+
     final tableHeaders = ['الصنف', 'الوحدة', 'السعر', 'الكمية'];
-    final tableRows = items.map((item) {
+    final tableRows = widget.formattedproudct.map((item) {
+  
       return [
-        item['class'],
-        item['unit'],
-        item['price'].toString(),
-        item['quantity'].toString(),
+        item.productName,
+        item.unit,
+        item.price.toString(),
+       item.count.toString(),
       ];
     }).toList();
 

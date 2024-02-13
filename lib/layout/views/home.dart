@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sonod_point_of_sell/core/util/trans_pdf.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart';
 import 'package:sonod_point_of_sell/core/util/blocs_objects.dart';
 import 'package:sonod_point_of_sell/core/util/format_number.dart';
 import 'package:sonod_point_of_sell/core/util/formatted_proudct.dart';
 import 'package:sonod_point_of_sell/core/util/keyboard_opertion.dart';
-import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
-import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
-import 'package:sonod_point_of_sell/layout/views/widgets/keyboard.dart';
-import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
-import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
+import 'package:sonod_point_of_sell/core/util/trans_pdf.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/bill_header.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/bill_number.dart';
-import 'package:sonod_point_of_sell/layout/views/widgets/page_header.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/cart_item.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/categories.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/keyboard.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/optional_bar.dart';
+import 'package:sonod_point_of_sell/layout/views/widgets/page_header.dart';
 import 'package:sonod_point_of_sell/layout/views/widgets/proudcts_items_widget.dart';
 import 'package:sonod_point_of_sell/manager/fetch_proudct_by_id/fetch_proudect_by_id_bloc.dart';
+import 'package:sonod_point_of_sell/manager/product_bloc/ui_bloc.dart';
+import 'package:sonod_point_of_sell/model/prodect_model.dart' as model;
+import 'package:sonod_point_of_sell/model/prodect_model.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -392,7 +392,21 @@ class _HomeState extends State<Home> {
                                             .updateStayedAmount(context);
                                       }
                                     }
-                                  })
+                                  }),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PdfFourColumnExample(formattedproudct:formattedProducts,
+                                                  paidAmount: featchBlocById(context).paidAmountController,
+                                                  stayedAmount:featchBlocById(context).stayedAmount ,
+                                                  totalAmount: total,
+                                                  ),
+                                            ));
+                                      },
+                                      child: Text('PDF'))
                                 ]),
                           )
                         ],
@@ -411,9 +425,6 @@ class _HomeState extends State<Home> {
               )
             ],
           )),
-         TextButton(onPressed: () {
-           Navigator.push(context, MaterialPageRoute(builder: (context) => PdfFourColumnExample() ,));
-         }, child: Text('PDF'))
         ],
       ),
     );
